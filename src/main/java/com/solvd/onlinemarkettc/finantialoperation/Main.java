@@ -57,8 +57,6 @@ public class Main {
         Jparser jparser = new Jparser();
         OnlineShop jshop = jparser.parse("src/main/java/resources/hierarchy.json");
 
-        log.info(jshop);
-
         String json = Files.readString(Paths.get("src/main/java/resources/hierarchy.json"));
 
         String name = JsonPath.read(json, "$.foodProducts[0].foodProduct.name");
