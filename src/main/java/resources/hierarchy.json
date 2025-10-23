@@ -1,0 +1,59 @@
+{
+  "foodProducts": [
+    {
+      "foodProduct": {
+        "name": "Snickers_Bar",
+        "cost": 10.0,
+        "expirationDate": "2026-12-31T00:00:00"
+      },
+      "amount": 25
+    },
+    {
+      "foodProduct": {
+        "name": "White_Bread",
+        "cost": 1.8,
+        "expirationDate": "2025-12-31T00:00:00"
+      },
+      "amount": 15
+    }
+  ],
+  "nonFoodProducts": [
+    {
+      "nonPerishebleProduct": {
+        "name": "Blue_Pen",
+        "cost": 0.5,
+        "description": "just_blue_pen"
+      },
+      "amount": 100
+    }
+  ],
+  "users": [
+    {
+      "name": "kaxa_bedukidze",
+      "userId": "12345678",
+      "debitCard": {
+        "cardNumber": "12345678",
+        "active": true,
+        "moneyAmount": 100.0
+      },
+      "basket": {
+        "basketId": "id1",
+        "foodProductList": [
+          {
+            "name": "Snickers_Bar",
+            "cost": 10.0,
+            "expirationDate": "2026-12-31T00:00:00"
+          }
+        ],
+        "nonPerishebleProductList": [
+          {
+            "name": "Blue_Pen",
+            "cost": 0.5,
+            "description": "just_blue_pen"
+          }
+        ],
+        "date": "2024-08-09T11:30:00"
+      }
+    }
+  ]
+}

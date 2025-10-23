@@ -1,18 +1,32 @@
 package com.solvd.onlinemarkettc.payment;
 
-import com.solvd.onlinemarkettc.Util.Generator;
-import org.apache.logging.log4j.util.PropertySource;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.solvd.onlinemarkettc.util.Generator;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public class DebitCard {
 
+    @XmlElement(name = "cardNumber")
+    @JsonProperty("cardNumber")
     private String cardNumber;
+    @XmlElement(name = "active")
+    @JsonProperty("active")
     private boolean active;
+    @XmlElement(name = "moneyAmount")
+    @JsonProperty("moneyAmount")
     private double moneyAmount = 0.0;
 
     public DebitCard(boolean active, double moneyAmount) {
         this.cardNumber = Generator.numberGenerator();
         this.active = active;
         this.moneyAmount = moneyAmount;
+    }
+
+    public DebitCard() {
     }
 
     public String getCardNumber() {
@@ -38,7 +52,8 @@ public class DebitCard {
     public void setMoneyAmount(double moneyAmount) {
         this.moneyAmount = moneyAmount;
     }
-    public void minusMoney(Double amountToMinus){
-       moneyAmount = moneyAmount - amountToMinus;
+
+    public void minusMoney(Double amountToMinus) {
+        moneyAmount = moneyAmount - amountToMinus;
     }
 }

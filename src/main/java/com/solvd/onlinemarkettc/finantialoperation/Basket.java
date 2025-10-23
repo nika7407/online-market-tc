@@ -1,18 +1,36 @@
 package com.solvd.onlinemarkettc.finantialoperation;
 
-import com.solvd.onlinemarkettc.Util.Generator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.solvd.onlinemarkettc.item.FoodProduct;
 import com.solvd.onlinemarkettc.item.NonPerishebleProduct;
+import com.solvd.onlinemarkettc.util.Generator;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import java.util.ArrayList;
 import java.util.Date;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Basket {
 
+    @XmlElement(name = "basketId")
+    @JsonProperty("basketId")
     private String basketId;
+
+    @XmlElementWrapper(name = "foodProductList")
+    @XmlElement(name = "FoodProduct")
+    @JsonProperty("foodProductList")
     private ArrayList<FoodProduct> foodProductList = new ArrayList<>();
+
+    @XmlElementWrapper(name = "nonPerishebleProductList")
+    @XmlElement(name = "NonPerishebleProduct")
+    @JsonProperty("nonPerishebleProductList")
     private ArrayList<NonPerishebleProduct> nonPerishebleProductList = new ArrayList<>();
+
     private double sumCost = 0.0;
+    @JsonProperty("date")
     private Date date;
 
     public Basket() {
@@ -24,12 +42,12 @@ public class Basket {
         return foodProductList;
     }
 
-    public void addFoodProduct(FoodProduct foodProduct){
+    public void addFoodProduct(FoodProduct foodProduct) {
         foodProductList.add(foodProduct);
         calculateCost();
     }
 
-    public void addProduct(NonPerishebleProduct product){
+    public void addProduct(NonPerishebleProduct product) {
         nonPerishebleProductList.add(product);
         calculateCost();
     }
@@ -55,7 +73,7 @@ public class Basket {
         sumCost = totalCostOfFood + totalCostOfProduct;
     }
 
-    public String getId(){
+    public String getId() {
         return basketId;
     }
 }

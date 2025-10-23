@@ -1,17 +1,37 @@
 package com.solvd.onlinemarkettc.item;
 
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+import java.util.Date;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType
 public class FoodProduct {
 
+    @XmlElement(name = "cost")
+    @JsonProperty("cost")
     private double cost;
-    private LocalDateTime expirationDate;
+
+    @JsonProperty("expirationDate")
+    @XmlElement(name = "expirationDate")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private Date expirationDate;
+
+    @XmlElement(name = "name")
+    @JsonProperty("name")
     private String name;
 
     public FoodProduct(double cost, String name) {
         this.cost = cost;
-        this.expirationDate = expirationDate;
         this.name = name;
+    }
+
+    public FoodProduct() {
     }
 
     public double getCost() {
@@ -22,11 +42,11 @@ public class FoodProduct {
         this.cost = cost;
     }
 
-    public LocalDateTime getExpirationDate() {
+    public Date getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDateTime expirationDate) {
+    public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
 

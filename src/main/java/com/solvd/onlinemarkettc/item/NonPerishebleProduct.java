@@ -1,15 +1,33 @@
 package com.solvd.onlinemarkettc.item;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType
 public class NonPerishebleProduct {
 
+    @XmlElement(name = "name")
+    @JsonProperty("name")
     private String name;
+    @XmlElement(name = "cost")
+    @JsonProperty("cost")
     private double cost;
-    private String Description = "";
+    @XmlElement(name = "description")
+    @JsonProperty("description")
+    private String description = "";
 
     public NonPerishebleProduct(String name, double cost, String description) {
         this.name = name;
         this.cost = cost;
-        Description = description;
+        this.description = description;
+    }
+
+    public NonPerishebleProduct() {
     }
 
     public String getName() {
@@ -29,10 +47,10 @@ public class NonPerishebleProduct {
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
 }

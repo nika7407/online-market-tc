@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="OnlineShop">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="foodProducts" type="FoodProductsType"/>
+                <xs:element name="nonFoodProduct" type="NonFoodProductsType"/>
+                <xs:element name="users" type="UsersType"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- FOOD PRODUCTS -->
+    <xs:complexType name="FoodProductsType">
+        <xs:sequence>
+            <xs:element name="ObjectAmount" type="FoodObjectAmountType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="FoodObjectAmountType">
+        <xs:sequence>
+            <xs:element name="FoodProduct" type="FoodProductType"/>
+            <xs:element name="amount" type="xs:integer"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="FoodProductType">
+        <xs:sequence>
+            <xs:element name="cost" type="xs:decimal"/>
+            <xs:element name="expirationDate" type="xs:dateTime"/>
+            <xs:element name="name" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- NON-FOOD PRODUCTS -->
+    <xs:complexType name="NonFoodProductsType">
+        <xs:sequence>
+            <xs:element name="ObjectAmount" type="NonFoodObjectAmountType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="NonFoodObjectAmountType">
+        <xs:sequence>
+            <xs:element name="NonPerishebleProduct" type="NonPerishableProductType"/>
+            <xs:element name="amount" type="xs:integer"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="NonPerishableProductType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="cost" type="xs:decimal"/>
+            <xs:element name="description" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- USERS -->
+    <xs:complexType name="UsersType">
+        <xs:sequence>
+            <xs:element name="User" type="UserType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="UserType">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="userId" type="xs:string"/>
+            <xs:element name="debitCard" type="DebitCardType"/>
+            <xs:element name="basket" type="BasketType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DebitCardType">
+        <xs:sequence>
+            <xs:element name="cardNumber" type="xs:string"/>
+            <xs:element name="active" type="xs:boolean"/>
+            <xs:element name="moneyAmount" type="xs:decimal"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="BasketType">
+        <xs:sequence>
+            <xs:element name="basketId" type="xs:string"/>
+            <xs:element name="foodProductList" type="FoodProductListType"/>
+            <xs:element name="nonPerishebleProductList" type="NonPerishableProductListType"/>
+            <xs:element name="date" type="xs:dateTime"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="FoodProductListType">
+        <xs:sequence>
+            <xs:element name="FoodProduct" type="FoodProductType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="NonPerishableProductListType">
+        <xs:sequence>
+            <xs:element name="NonPerishebleProduct" type="NonPerishableProductType" minOccurs="0"
+                        maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>
