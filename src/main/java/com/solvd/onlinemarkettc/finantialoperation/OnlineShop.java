@@ -2,9 +2,10 @@ package com.solvd.onlinemarkettc.finantialoperation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.solvd.onlinemarkettc.exceptions.UserNotFoundException;
+import com.solvd.onlinemarkettc.item.DiscountedItem;
 import com.solvd.onlinemarkettc.item.FoodProduct;
 import com.solvd.onlinemarkettc.item.NonPerishebleProduct;
-import com.solvd.onlinemarkettc.item.ObjectAmount;
+import com.solvd.onlinemarkettc.item.Service;
 import com.solvd.onlinemarkettc.user.User;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -20,32 +21,44 @@ import java.util.List;
 public class OnlineShop {
 
     @XmlElementWrapper(name = "foodProducts")
-    @XmlElement(name = "ObjectAmount")
+    @XmlElement(name = "FoodProduct")
     @JsonProperty("foodProducts")
-    private ArrayList<ObjectAmount<FoodProduct>> foodProducts;
+    private List<FoodProduct> foodProducts;
 
     @XmlElementWrapper(name = "nonFoodProduct")
-    @XmlElement(name = "ObjectAmount")
+    @XmlElement(name = "NonPerishebleProduct")
     @JsonProperty("nonFoodProducts")
-    private ArrayList<ObjectAmount<NonPerishebleProduct>> nonFoodProduct;
+    private List<NonPerishebleProduct> nonFoodProduct;
 
     @XmlElementWrapper(name = "users")
     @XmlElement(name = "User")
     @JsonProperty("users")
-    private ArrayList<User> users;
+    private List<User> users;
+
+    @XmlElementWrapper(name = "services")
+    @XmlElement(name = "Service")
+    @JsonProperty("services")
+    private List<Service> serviceList;
+
+    @XmlElementWrapper(name = "discountedItems")
+    @XmlElement(name = "DiscountedItem")
+    @JsonProperty("discountedItems")
+    private List<DiscountedItem> discountList;
 
     public OnlineShop() {
         this.foodProducts = new ArrayList<>();
         this.nonFoodProduct = new ArrayList<>();
         this.users = new ArrayList<>();
+        this.serviceList = new ArrayList<>();
+        this.discountList = new ArrayList<>();
     }
 
 
-    public ArrayList<ObjectAmount<FoodProduct>> getFoodProducts() {
+    public List<FoodProduct> getFoodProducts() {
         return foodProducts;
     }
 
-    public ArrayList<ObjectAmount<NonPerishebleProduct>> getNonFoodProduct() {
+    public List<NonPerishebleProduct> getNonFoodProduct() {
         return nonFoodProduct;
     }
 
@@ -55,22 +68,21 @@ public class OnlineShop {
 
     public boolean addToBasket(FoodProduct foodProduct, Basket basket) {
         return foodProducts.stream()
-                .filter(objectAmount -> objectAmount.getObject().equals(foodProduct) && objectAmount.getAmount() > 0)
+                .filter(food -> food.equals(foodProduct))
                 .findFirst()
                 .map(objectAmount -> {
                     basket.addFoodProduct(foodProduct);
-                    objectAmount.setAmount(objectAmount.getAmount() - 1);
                     return true;
                 })
                 .orElse(false);
     }
 
     public void addFoodProduct(FoodProduct product, int amount) {
-        foodProducts.add(new ObjectAmount<>(product, amount));
+        foodProducts.add(product);
     }
 
     public void addNonFoodProduct(NonPerishebleProduct product, int amount) {
-        nonFoodProduct.add(new ObjectAmount<>(product, amount));
+        nonFoodProduct.add(product);
     }
 
     public void addUser(User user) {
@@ -81,5 +93,21 @@ public class OnlineShop {
         return users.stream()
                 .filter(user -> user.getUserId().equals(id))
                 .findFirst().orElseThrow(() -> new UserNotFoundException("user noot found"));
+    }
+
+    public List<Service> getServiceList() {
+        return serviceList;
+    }
+
+    public void setServiceList(List<Service> serviceList) {
+        this.serviceList = serviceList;
+    }
+
+    public List<DiscountedItem> getDiscountList() {
+        return discountList;
+    }
+
+    public void setDiscountList(List<DiscountedItem> discountList) {
+        this.discountList = discountList;
     }
 }

@@ -1,6 +1,7 @@
 package com.solvd.onlinemarkettc.finantialoperation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.solvd.onlinemarkettc.delivery.Address;
 import com.solvd.onlinemarkettc.item.FoodProduct;
 import com.solvd.onlinemarkettc.item.NonPerishebleProduct;
 import com.solvd.onlinemarkettc.util.Generator;
@@ -29,9 +30,18 @@ public class Basket {
     @JsonProperty("nonPerishebleProductList")
     private ArrayList<NonPerishebleProduct> nonPerishebleProductList = new ArrayList<>();
 
+    @XmlElement(name = "sumCost")
+    @JsonProperty("sumCost")
     private double sumCost = 0.0;
+
+    @XmlElement(name = "date")
     @JsonProperty("date")
     private Date date;
+
+    @XmlElement(name = "address")  // Changed from "adress" to "address"
+    @JsonProperty("address")       // Changed from "adress" to "address"
+    private Address address;
+
 
     public Basket() {
         this.basketId = Generator.numberGenerator();
@@ -58,6 +68,26 @@ public class Basket {
 
     public double getSumCost() {
         return sumCost;
+    }
+
+    public void setSumCost(double sumCost) {
+        this.sumCost = sumCost;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address adress) {
+        this.address = adress;
     }
 
     private void calculateCost() {

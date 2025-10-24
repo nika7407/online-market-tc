@@ -1,41 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OnlineShop>
     <foodProducts>
-        <ObjectAmount>
             <FoodProduct>
                 <cost>10.0</cost>
                 <expirationDate>2026-12-31T00:00:00</expirationDate>
                 <name>Snickers_Bar</name>
             </FoodProduct>
-            <amount>25</amount>
-        </ObjectAmount>
-        <ObjectAmount>
             <FoodProduct>
                 <cost>1.8</cost>
                 <expirationDate>2025-12-31T00:00:00</expirationDate>
                 <name>White_Bread</name>
             </FoodProduct>
-            <amount>15</amount>
-        </ObjectAmount>
     </foodProducts>
     <nonFoodProduct>
-        <ObjectAmount>
             <NonPerishebleProduct>
                 <name>Blue_Pen</name>
                 <cost>0.5</cost>
                 <description>just_blue_pen</description>
             </NonPerishebleProduct>
-            <amount>100</amount>
-        </ObjectAmount>
-        <ObjectAmount>
             <NonPerishebleProduct>
                 <name>Red_Pen</name>
                 <cost>0.6</cost>
                 <description>just_red_pen</description>
             </NonPerishebleProduct>
-            <amount>99</amount>
-        </ObjectAmount>
     </nonFoodProduct>
+    <discountedItems>
+            <DiscountedItem>
+                <name>Promo_Mug</name>
+                <cost>2.5</cost>
+                <description>limited_offer</description>
+            </DiscountedItem>
+    </discountedItems>
+    <services>
+        <Service>
+            <name>Home_Delivery</name>
+            <cost>5.0</cost>
+            <description>delivery_service</description>
+            <serviceProvider>FastShip</serviceProvider>
+        </Service>
+    </services>
     <users>
         <User>
             <name>kaxa_bedukidze</name>
@@ -62,6 +65,10 @@
                     </NonPerishebleProduct>
                 </nonPerishebleProductList>
                 <date>2024-08-09T11:30:00:00</date>
+                <adress>
+                    <deliveryAdress>some_street</deliveryAdress>
+                    <userId>12345678</userId>
+                </adress>
             </basket>
         </User>
     </users>

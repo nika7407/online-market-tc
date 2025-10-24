@@ -1,30 +1,41 @@
 {
   "foodProducts": [
     {
-      "foodProduct": {
-        "name": "Snickers_Bar",
-        "cost": 10.0,
-        "expirationDate": "2026-12-31T00:00:00"
-      },
-      "amount": 25
+      "cost": 10.0,
+      "expirationDate": "2026-12-31T00:00:00",
+      "name": "Snickers_Bar"
     },
     {
-      "foodProduct": {
-        "name": "White_Bread",
-        "cost": 1.8,
-        "expirationDate": "2025-12-31T00:00:00"
-      },
-      "amount": 15
+      "cost": 1.8,
+      "expirationDate": "2025-12-31T00:00:00",
+      "name": "White_Bread"
     }
   ],
   "nonFoodProducts": [
     {
-      "nonPerishebleProduct": {
-        "name": "Blue_Pen",
-        "cost": 0.5,
-        "description": "just_blue_pen"
-      },
-      "amount": 100
+      "name": "Blue_Pen",
+      "cost": 0.5,
+      "description": "just_blue_pen"
+    },
+    {
+      "name": "Red_Pen",
+      "cost": 0.6,
+      "description": "just_red_pen"
+    }
+  ],
+  "discountedItems": [
+    {
+      "name": "Promo_Mug",
+      "cost": 2.5,
+      "description": "limited_offer"
+    }
+  ],
+  "services": [
+    {
+      "name": "Home_Delivery",
+      "cost": 5.0,
+      "description": "delivery_service",
+      "serviceProvider": "FastShip"
     }
   ],
   "users": [
@@ -40,9 +51,9 @@
         "basketId": "id1",
         "foodProductList": [
           {
-            "name": "Snickers_Bar",
             "cost": 10.0,
-            "expirationDate": "2026-12-31T00:00:00"
+            "expirationDate": "2026-12-31T00:00:00",
+            "name": "Snickers_Bar"
           }
         ],
         "nonPerishebleProductList": [
@@ -52,7 +63,12 @@
             "description": "just_blue_pen"
           }
         ],
-        "date": "2024-08-09T11:30:00"
+        "sumCost": 10.5,
+        "date": "2024-08-09T11:30:00",
+        "address": {
+          "deliveryAddress": "some_street",
+          "userId": "12345678"
+        }
       }
     }
   ]
