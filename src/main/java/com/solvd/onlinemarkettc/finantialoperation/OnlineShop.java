@@ -85,6 +85,18 @@ public class OnlineShop {
         nonFoodProduct.add(product);
     }
 
+    public void setFoodProducts(List<FoodProduct> foodProducts) {
+        this.foodProducts = foodProducts;
+    }
+
+    public void setNonFoodProduct(List<NonPerishebleProduct> nonFoodProduct) {
+        this.nonFoodProduct = nonFoodProduct;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
     public void addUser(User user) {
         users.add(user);
     }

@@ -4,14 +4,18 @@ import com.jayway.jsonpath.JsonPath;
 import com.solvd.onlinemarkettc.item.FoodProduct;
 import com.solvd.onlinemarkettc.item.NonPerishebleProduct;
 import com.solvd.onlinemarkettc.payment.DebitCard;
+import com.solvd.onlinemarkettc.util.Dparser;
 import com.solvd.onlinemarkettc.util.Jparser;
 import com.solvd.onlinemarkettc.util.Xparser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
@@ -19,7 +23,7 @@ public class Main {
 
     private static final Logger log = LogManager.getLogger(Main.class);
 
-    public static void main(String[] args) throws JAXBException, IOException {
+    public static void main(String[] args) throws Exception {
         System.out.println("Program started");
         System.out.println("=== System.out ===");
         log.info("=== Logger INFO ===");
@@ -47,9 +51,13 @@ public class Main {
 
         CheckOut.checkoutBasket(debitCard1, basket);
 
+        String xmlPath = "src/main/java/resources/hierarchy.xml";
         Xparser parser = new Xparser();
-        OnlineShop xmlShop = parser.unmarshal("src/main/java/resources/hierarchy.xml");
+        OnlineShop xmlShop = parser.unmarshal(xmlPath);
         log.info("xml hierarchy parsed!");
+
+        OnlineShop Dshop = Dparser.parser(Path.of(xmlPath));
+        log.info("Dshop is created using DOM");
 
         log.info(xmlShop.getFoodProducts().getFirst());
 

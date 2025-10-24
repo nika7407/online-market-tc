@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Basket {
@@ -23,12 +24,12 @@ public class Basket {
     @XmlElementWrapper(name = "foodProductList")
     @XmlElement(name = "FoodProduct")
     @JsonProperty("foodProductList")
-    private ArrayList<FoodProduct> foodProductList = new ArrayList<>();
+    private List<FoodProduct> foodProductList = new ArrayList<>();
 
     @XmlElementWrapper(name = "nonPerishebleProductList")
     @XmlElement(name = "NonPerishebleProduct")
     @JsonProperty("nonPerishebleProductList")
-    private ArrayList<NonPerishebleProduct> nonPerishebleProductList = new ArrayList<>();
+    private List<NonPerishebleProduct> nonPerishebleProductList = new ArrayList<>();
 
     @XmlElement(name = "sumCost")
     @JsonProperty("sumCost")
@@ -48,7 +49,19 @@ public class Basket {
         this.date = new Date();
     }
 
-    public ArrayList<FoodProduct> getFoodProductList() {
+    public void setBasketId(String basketId) {
+        this.basketId = basketId;
+    }
+
+    public void setFoodProductList(List<FoodProduct> foodProductList) {
+        this.foodProductList = foodProductList;
+    }
+
+    public void setNonPerishebleProductList(List<NonPerishebleProduct> nonPerishebleProductList) {
+        this.nonPerishebleProductList = nonPerishebleProductList;
+    }
+
+    public List<FoodProduct> getFoodProductList() {
         return foodProductList;
     }
 
@@ -62,7 +75,7 @@ public class Basket {
         calculateCost();
     }
 
-    public ArrayList<NonPerishebleProduct> getNonPerishebleProductList() {
+    public List<NonPerishebleProduct> getNonPerishebleProductList() {
         return nonPerishebleProductList;
     }
 
