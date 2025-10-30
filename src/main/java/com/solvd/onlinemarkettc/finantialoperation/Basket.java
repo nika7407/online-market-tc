@@ -2,8 +2,10 @@ package com.solvd.onlinemarkettc.finantialoperation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.solvd.onlinemarkettc.delivery.Address;
+import com.solvd.onlinemarkettc.item.DiscountedItem;
 import com.solvd.onlinemarkettc.item.FoodProduct;
 import com.solvd.onlinemarkettc.item.NonPerishebleProduct;
+import com.solvd.onlinemarkettc.item.Service;
 import com.solvd.onlinemarkettc.util.Generator;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,6 +33,16 @@ public class Basket {
     @JsonProperty("nonPerishebleProductList")
     private List<NonPerishebleProduct> nonPerishebleProductList = new ArrayList<>();
 
+    @XmlElementWrapper(name = "discountedItemList")
+    @XmlElement(name = "DiscountedItem")
+    @JsonProperty("discountedItemList")
+    private List<DiscountedItem> discountedItemList = new ArrayList<>();
+
+    @XmlElementWrapper(name = "serviceList")
+    @XmlElement(name = "Service")
+    @JsonProperty("serviceList")
+    private List<Service> serviceList = new ArrayList<>();
+
     @XmlElement(name = "sumCost")
     @JsonProperty("sumCost")
     private double sumCost = 0.0;
@@ -39,8 +51,8 @@ public class Basket {
     @JsonProperty("date")
     private Date date;
 
-    @XmlElement(name = "address")  // Changed from "adress" to "address"
-    @JsonProperty("address")       // Changed from "adress" to "address"
+    @XmlElement(name = "address")
+    @JsonProperty("address")
     private Address address;
 
 
@@ -103,6 +115,32 @@ public class Basket {
         this.address = adress;
     }
 
+    public List<DiscountedItem> getDiscountedItemList() {
+        return discountedItemList;
+    }
+
+    public void setDiscountedItemList(List<DiscountedItem> discountedItemList) {
+        this.discountedItemList = discountedItemList;
+    }
+
+    public void addDiscountedItem(DiscountedItem item) {
+        this.discountedItemList.add(item);
+        calculateCost();
+    }
+
+    public List<Service> getServiceList() {
+        return serviceList;
+    }
+
+    public void setServiceList(List<Service> serviceList) {
+        this.serviceList = serviceList;
+    }
+
+    public void addService(Service service) {
+        this.serviceList.add(service);
+        calculateCost();
+    }
+
     private void calculateCost() {
 
         double totalCostOfFood = foodProductList.stream()
@@ -113,7 +151,15 @@ public class Basket {
                 .mapToDouble(NonPerishebleProduct::getCost)
                 .sum();
 
-        sumCost = totalCostOfFood + totalCostOfProduct;
+        double totalCostOfDiscounted = discountedItemList.stream()
+                .mapToDouble(DiscountedItem::getCost)
+                .sum();
+
+        double totalCostOfServices = serviceList.stream()
+                .mapToDouble(Service::getCost)
+                .sum();
+
+        sumCost = totalCostOfFood + totalCostOfProduct + totalCostOfDiscounted + totalCostOfServices;
     }
 
     public String getId() {

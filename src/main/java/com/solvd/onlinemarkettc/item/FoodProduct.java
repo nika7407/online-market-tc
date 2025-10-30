@@ -17,6 +17,10 @@ public class FoodProduct {
     @JsonProperty("cost")
     private double cost;
 
+    @XmlElement(name = "productId")
+    @JsonProperty("productId")
+    private String productId;
+
     @JsonProperty("expirationDate")
     @XmlElement(name = "expirationDate")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -26,9 +30,10 @@ public class FoodProduct {
     @JsonProperty("name")
     private String name;
 
-    public FoodProduct(double cost, String name) {
+    public FoodProduct(double cost, String name, String productId) {
         this.cost = cost;
         this.name = name;
+        this.productId=productId;
     }
 
     public FoodProduct() {
@@ -56,5 +61,13 @@ public class FoodProduct {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 }

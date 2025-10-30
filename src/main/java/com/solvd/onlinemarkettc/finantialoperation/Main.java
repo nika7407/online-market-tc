@@ -29,11 +29,11 @@ public class Main {
         log.info("=== Logger INFO ===");
         log.error("=== Logger ERROR ===");
         log.debug("=== Logger DEBUG ===");
-        FoodProduct apple = new FoodProduct(0.5, "apple");
-        FoodProduct banana = new FoodProduct(0.3, "banana");
+        FoodProduct apple = new FoodProduct(0.5, "apple","2");
+        FoodProduct banana = new FoodProduct(0.3, "banana","1");
 
-        NonPerishebleProduct soap = new NonPerishebleProduct("soap", 1.2, "");
-        NonPerishebleProduct shampoo = new NonPerishebleProduct("shampoo", 3.5, "");
+        NonPerishebleProduct soap = new NonPerishebleProduct("soap", 1.2, "","1");
+        NonPerishebleProduct shampoo = new NonPerishebleProduct("shampoo", 3.5, "","2");
 
         ArrayList<FoodProduct> foodList = new ArrayList<>();
         foodList.add(apple);

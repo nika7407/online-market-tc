@@ -12,7 +12,7 @@ public class DebitCard {
 
     @XmlElement(name = "cardNumber")
     @JsonProperty("cardNumber")
-    private String cardNumber;
+    private String cardId;
     @XmlElement(name = "active")
     @JsonProperty("active")
     private boolean active;
@@ -21,7 +21,7 @@ public class DebitCard {
     private double moneyAmount = 0.0;
 
     public DebitCard(boolean active, double moneyAmount) {
-        this.cardNumber = Generator.numberGenerator();
+        this.cardId = Generator.numberGenerator();
         this.active = active;
         this.moneyAmount = moneyAmount;
     }
@@ -30,11 +30,11 @@ public class DebitCard {
     }
 
     public String getCardNumber() {
-        return cardNumber;
+        return cardId;
     }
 
     public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
+        this.cardId = cardNumber;
     }
 
     public boolean isActive() {

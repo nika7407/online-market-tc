@@ -3,11 +3,13 @@
     <foodProducts>
         <FoodProduct>
             <cost>10.0</cost>
+            <productId>1</productId>
             <expirationDate>2026-12-31T00:00:00</expirationDate>
             <name>Snickers_Bar</name>
         </FoodProduct>
         <FoodProduct>
             <cost>1.8</cost>
+            <productId>2</productId>
             <expirationDate>2025-12-31T00:00:00</expirationDate>
             <name>White_Bread</name>
         </FoodProduct>
@@ -17,16 +19,19 @@
                 <name>Blue_Pen</name>
                 <cost>0.5</cost>
                 <description>just_blue_pen</description>
+                <productId>1</productId>
             </NonPerishebleProduct>
             <NonPerishebleProduct>
                 <name>Red_Pen</name>
                 <cost>0.6</cost>
                 <description>just_red_pen</description>
+                <productId>2</productId>
             </NonPerishebleProduct>
     </nonFoodProduct>
     <discountedItems>
             <DiscountedItem>
                 <name>Promo_Mug</name>
+                <discountedItemId>1</discountedItemId>
                 <cost>2.5</cost>
                 <description>limited_offer</description>
             </DiscountedItem>
@@ -34,6 +39,7 @@
     <services>
         <Service>
             <name>Home_Delivery</name>
+            <serviceId>1</serviceId>
             <cost>5.0</cost>
             <description>delivery_service</description>
             <serviceProvider>FastShip</serviceProvider>
@@ -53,6 +59,7 @@
                 <foodProductList>
                     <FoodProduct>
                         <cost>10.0</cost>
+                        <productId>1</productId>
                         <expirationDate>2026-12-31T00:00:00</expirationDate>
                         <name>Snickers_Bar</name>
                     </FoodProduct>
@@ -62,11 +69,31 @@
                         <name>Blue_Pen</name>
                         <cost>0.5</cost>
                         <description>just_blue_pen</description>
+                        <productId>1</productId>
                     </NonPerishebleProduct>
                 </nonPerishebleProductList>
+                <discountedItemList>
+                    <DiscountedItem>
+                        <name>Promo_Mug</name>
+                        <discountedItemId>1</discountedItemId>
+                        <cost>2.5</cost>
+                        <description>limited_offer</description>
+                    </DiscountedItem>
+                </discountedItemList>
+                <serviceList>
+                    <Service>
+                        <name>Home_Delivery</name>
+                        <serviceId>1</serviceId>
+                        <cost>5.0</cost>
+                        <description>delivery_service</description>
+                        <serviceProvider>FastShip</serviceProvider>
+                    </Service>
+                </serviceList>
+                <sumCost>10.5</sumCost>
                 <date>2024-08-09T11:30:00</date>
                 <address>
-                    <deliveryAdress>some_street</deliveryAdress>
+                    <deliveryAddress>some_street</deliveryAddress>
+                    <deliveryAddressId>1</deliveryAddressId>
                     <userId>12345678</userId>
                 </address>
             </basket>

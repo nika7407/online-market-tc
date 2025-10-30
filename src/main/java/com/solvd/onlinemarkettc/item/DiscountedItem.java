@@ -13,6 +13,9 @@ public class DiscountedItem {
     @XmlElement(name = "name")
     @JsonProperty("name")
     private String name;
+    @XmlElement(name = "discountedItemId")
+    @JsonProperty("discountedItemId")
+    private String discountedItemId;
     @XmlElement(name = "cost")
     @JsonProperty("cost")
     private double cost;
@@ -51,5 +54,13 @@ public class DiscountedItem {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getDiscountedItemId() {
+        return discountedItemId;
+    }
+
+    public void setDiscountedItemId(String discountedItemId) {
+        this.discountedItemId = discountedItemId;
     }
 }
