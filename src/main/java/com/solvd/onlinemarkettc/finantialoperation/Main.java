@@ -29,11 +29,11 @@ public class Main {
         log.info("=== Logger INFO ===");
         log.error("=== Logger ERROR ===");
         log.debug("=== Logger DEBUG ===");
-        FoodProduct apple = new FoodProduct(0.5, "apple","2");
-        FoodProduct banana = new FoodProduct(0.3, "banana","1");
+        FoodProduct apple = new FoodProduct(0.5, "apple", 2L);
+        FoodProduct banana = new FoodProduct(0.3, "banana", 1L);
 
-        NonPerishebleProduct soap = new NonPerishebleProduct("soap", 1.2, "","1");
-        NonPerishebleProduct shampoo = new NonPerishebleProduct("shampoo", 3.5, "","2");
+        NonPerishebleProduct soap = new NonPerishebleProduct("soap", 1.2, "", 1L);
+        NonPerishebleProduct shampoo = new NonPerishebleProduct("shampoo", 3.5, "", 2L);
 
         ArrayList<FoodProduct> foodList = new ArrayList<>();
         foodList.add(apple);
@@ -78,7 +78,8 @@ public class Main {
         Double money = JsonPath.read(json, "$.users[0].debitCard.moneyAmount");
         log.info("First user money: {}", money);
 
-        String basketId = JsonPath.read(json, "$.users[0].basket.basketId");
+        Number id = JsonPath.read(json, "$.users[0].basket.id");
+        Long basketId = (id == null) ? null : id.longValue();
         log.info("First basket ID: {}", basketId);
 
         System.out.println("ended");

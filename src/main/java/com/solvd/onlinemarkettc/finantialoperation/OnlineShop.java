@@ -103,7 +103,7 @@ public class OnlineShop {
 
     public User getUser(String id) {
         return users.stream()
-                .filter(user -> user.getUserId().equals(id))
+                .filter(user -> user.getId().equals(id))
                 .findFirst().orElseThrow(() -> new UserNotFoundException("user noot found"));
     }
 

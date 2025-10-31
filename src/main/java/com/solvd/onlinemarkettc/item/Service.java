@@ -17,9 +17,9 @@ public class Service {
     @JsonProperty("name")
     private String name;
 
-    @XmlElement(name = "serviceId")
-    @JsonProperty("serviceId")
-    private String serviceId;
+    @XmlElement(name = "id")
+    @JsonProperty("id")
+    private Long id;
 
     @XmlElement(name = "cost")
     @JsonProperty("cost")
@@ -75,12 +75,12 @@ public class Service {
         this.serviceProvider = serviceProvider;
     }
 
-    public String getServiceId() {
-        return serviceId;
+    public Long getId() {
+        return id;
     }
 
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }

@@ -46,9 +46,8 @@ public class Dparser {
 
                     FoodProduct foodProduct = new FoodProduct();
                     foodProduct.setCost(Double.parseDouble(foodElement.getElementsByTagName("cost").item(0).getTextContent()));
-                    // optional productId
-                    if (foodElement.getElementsByTagName("productId").getLength() > 0) {
-                        foodProduct.setProductId(foodElement.getElementsByTagName("productId").item(0).getTextContent());
+                    if (foodElement.getElementsByTagName("id").getLength() > 0) {
+                        foodProduct.setId(Long.parseLong(foodElement.getElementsByTagName("id").item(0).getTextContent()));
                     }
                     foodProduct.setExpirationDate(dateFormat.parse(foodElement.getElementsByTagName("expirationDate").item(0).getTextContent()));
                     foodProduct.setName(foodElement.getElementsByTagName("name").item(0).getTextContent());
@@ -71,8 +70,8 @@ public class Dparser {
                     nonFoodProduct.setName(nonFoodElement.getElementsByTagName("name").item(0).getTextContent());
                     nonFoodProduct.setCost(Double.parseDouble(nonFoodElement.getElementsByTagName("cost").item(0).getTextContent()));
                     nonFoodProduct.setDescription(nonFoodElement.getElementsByTagName("description").item(0).getTextContent());
-                    if (nonFoodElement.getElementsByTagName("productId").getLength() > 0) {
-                        nonFoodProduct.setProductId(nonFoodElement.getElementsByTagName("productId").item(0).getTextContent());
+                    if (nonFoodElement.getElementsByTagName("id").getLength() > 0) {
+                        nonFoodProduct.setId(Long.parseLong(nonFoodElement.getElementsByTagName("id").item(0).getTextContent()));
                     }
                     nonFoodProducts.add(nonFoodProduct);
                 }
@@ -90,8 +89,8 @@ public class Dparser {
                     DiscountedItem discountedItem = new DiscountedItem();
 
                     discountedItem.setName(discountedElement.getElementsByTagName("name").item(0).getTextContent());
-                    if (discountedElement.getElementsByTagName("discountedItemId").getLength() > 0) {
-                        discountedItem.setDiscountedItemId(discountedElement.getElementsByTagName("discountedItemId").item(0).getTextContent());
+                    if (discountedElement.getElementsByTagName("id").getLength() > 0) {
+                        discountedItem.setId(Long.parseLong(discountedElement.getElementsByTagName("id").item(0).getTextContent()));
                     }
                     discountedItem.setCost(Double.parseDouble(discountedElement.getElementsByTagName("cost").item(0).getTextContent()));
                     discountedItem.setDescription(discountedElement.getElementsByTagName("description").item(0).getTextContent());
@@ -111,8 +110,8 @@ public class Dparser {
                     Service service = new Service();
 
                     service.setName(serviceElement.getElementsByTagName("name").item(0).getTextContent());
-                    if (serviceElement.getElementsByTagName("serviceId").getLength() > 0) {
-                        service.setServiceId(serviceElement.getElementsByTagName("serviceId").item(0).getTextContent());
+                    if (serviceElement.getElementsByTagName("id").getLength() > 0) {
+                        service.setId(Long.parseLong(serviceElement.getElementsByTagName("id").item(0).getTextContent()));
                     }
                     service.setCost(Double.parseDouble(serviceElement.getElementsByTagName("cost").item(0).getTextContent()));
                     service.setDescription(serviceElement.getElementsByTagName("description").item(0).getTextContent());
@@ -131,21 +130,24 @@ public class Dparser {
                 Element userElement = (Element) userNode;
                 User user = new User();
                 user.setName(userElement.getElementsByTagName("name").item(0).getTextContent());
-                user.setUserId(userElement.getElementsByTagName("userId").item(0).getTextContent());
+                if (userElement.getElementsByTagName("id").getLength() > 0) {
+                    user.setId(Long.parseLong(userElement.getElementsByTagName("id").item(0).getTextContent()));
+                }
 
                 Element debitCardElement = (Element) userElement.getElementsByTagName("debitCard").item(0);
                 DebitCard debitCard = new DebitCard();
 
-                debitCard.setCardNumber(debitCardElement.getElementsByTagName("cardNumber").item(0).getTextContent());
                 debitCard.setActive(Boolean.parseBoolean(debitCardElement.getElementsByTagName("active").item(0).getTextContent()));
+                debitCard.setCardNumber(Long.parseLong(debitCardElement.getElementsByTagName("cardNumber").item(0).getTextContent()));
                 debitCard.setMoneyAmount(Double.parseDouble(debitCardElement.getElementsByTagName("moneyAmount").item(0).getTextContent()));
                 user.setDebitCard(debitCard);
 
                 Element basketElement = (Element) userElement.getElementsByTagName("basket").item(0);
                 Basket basket = new Basket();
 
-                basket.setBasketId(basketElement.getElementsByTagName("basketId").item(0).getTextContent());
-                // optional sumCost
+                if (basketElement.getElementsByTagName("id").getLength() > 0) {
+                    basket.setId(Long.parseLong(basketElement.getElementsByTagName("id").item(0).getTextContent()));
+                }
                 if (basketElement.getElementsByTagName("sumCost").getLength() > 0) {
                     basket.setSumCost(Double.parseDouble(basketElement.getElementsByTagName("sumCost").item(0).getTextContent()));
                 }
@@ -154,14 +156,15 @@ public class Dparser {
                 Element addressElement = (Element) basketElement.getElementsByTagName("address").item(0);
                 Address address = new Address();
 
-                // correct tag name: deliveryAddress
                 if (addressElement.getElementsByTagName("deliveryAddress").getLength() > 0) {
                     address.setDeliveryAddress(addressElement.getElementsByTagName("deliveryAddress").item(0).getTextContent());
                 }
-                if (addressElement.getElementsByTagName("deliveryAddressId").getLength() > 0) {
-                    address.setDeliveryAddressId(addressElement.getElementsByTagName("deliveryAddressId").item(0).getTextContent());
+                if (addressElement.getElementsByTagName("id").getLength() > 0) {
+                    address.setId(Long.parseLong(addressElement.getElementsByTagName("id").item(0).getTextContent()));
                 }
-                address.setUserId(addressElement.getElementsByTagName("userId").item(0).getTextContent());
+                if (addressElement.getElementsByTagName("id").getLength() > 0) {
+                    address.setUserId(addressElement.getElementsByTagName("id").item(0).getTextContent());
+                }
                 basket.setAddress(address);
 
                 List<FoodProduct> basketFoodProducts = new ArrayList<>();
@@ -170,8 +173,8 @@ public class Dparser {
                     Element basketFoodElement = (Element) basketFoodNodes.item(j);
                     FoodProduct foodProduct = new FoodProduct();
                     foodProduct.setCost(Double.parseDouble(basketFoodElement.getElementsByTagName("cost").item(0).getTextContent()));
-                    if (basketFoodElement.getElementsByTagName("productId").getLength() > 0) {
-                        foodProduct.setProductId(basketFoodElement.getElementsByTagName("productId").item(0).getTextContent());
+                    if (basketFoodElement.getElementsByTagName("id").getLength() > 0) {
+                        foodProduct.setId(Long.parseLong(basketFoodElement.getElementsByTagName("id").item(0).getTextContent()));
                     }
                     foodProduct.setExpirationDate(dateFormat.parse(basketFoodElement.getElementsByTagName("expirationDate").item(0).getTextContent()));
                     foodProduct.setName(basketFoodElement.getElementsByTagName("name").item(0).getTextContent());
@@ -187,24 +190,22 @@ public class Dparser {
                     nonFoodProduct.setName(basketNonFoodElement.getElementsByTagName("name").item(0).getTextContent());
                     nonFoodProduct.setCost(Double.parseDouble(basketNonFoodElement.getElementsByTagName("cost").item(0).getTextContent()));
                     nonFoodProduct.setDescription(basketNonFoodElement.getElementsByTagName("description").item(0).getTextContent());
-                    if (basketNonFoodElement.getElementsByTagName("productId").getLength() > 0) {
-                        nonFoodProduct.setProductId(basketNonFoodElement.getElementsByTagName("productId").item(0).getTextContent());
+                    if (basketNonFoodElement.getElementsByTagName("id").getLength() > 0) {
+                        nonFoodProduct.setId(Long.parseLong(basketNonFoodElement.getElementsByTagName("id").item(0).getTextContent()));
                     }
                     basketNonFoodProducts.add(nonFoodProduct);
                 }
                 basket.setNonPerishebleProductList(basketNonFoodProducts);
 
-                // parse discounted items inside basket (if any)
                 List<DiscountedItem> basketDiscounted = new ArrayList<>();
                 NodeList basketDiscountedNodes = basketElement.getElementsByTagName("DiscountedItem");
                 for (int j = 0; j < basketDiscountedNodes.getLength(); j++) {
                     Element basketDiscountedElement = (Element) basketDiscountedNodes.item(j);
-                    // ensure this DiscountedItem belongs to basket (parent check)
                     if (basketDiscountedElement.getParentNode() != null && "discountedItemList".equals(basketDiscountedElement.getParentNode().getNodeName())) {
                         DiscountedItem di = new DiscountedItem();
                         di.setName(basketDiscountedElement.getElementsByTagName("name").item(0).getTextContent());
-                        if (basketDiscountedElement.getElementsByTagName("discountedItemId").getLength() > 0) {
-                            di.setDiscountedItemId(basketDiscountedElement.getElementsByTagName("discountedItemId").item(0).getTextContent());
+                        if (basketDiscountedElement.getElementsByTagName("id").getLength() > 0) {
+                            di.setId(Long.parseLong(basketDiscountedElement.getElementsByTagName("id").item(0).getTextContent()));
                         }
                         di.setCost(Double.parseDouble(basketDiscountedElement.getElementsByTagName("cost").item(0).getTextContent()));
                         di.setDescription(basketDiscountedElement.getElementsByTagName("description").item(0).getTextContent());
@@ -213,7 +214,6 @@ public class Dparser {
                 }
                 basket.setDiscountedItemList(basketDiscounted);
 
-                // parse services inside basket (if any)
                 List<Service> basketServices = new ArrayList<>();
                 NodeList basketServiceNodes = basketElement.getElementsByTagName("Service");
                 for (int j = 0; j < basketServiceNodes.getLength(); j++) {
@@ -221,8 +221,8 @@ public class Dparser {
                     if (basketServiceElement.getParentNode() != null && "serviceList".equals(basketServiceElement.getParentNode().getNodeName())) {
                         Service s = new Service();
                         s.setName(basketServiceElement.getElementsByTagName("name").item(0).getTextContent());
-                        if (basketServiceElement.getElementsByTagName("serviceId").getLength() > 0) {
-                            s.setServiceId(basketServiceElement.getElementsByTagName("serviceId").item(0).getTextContent());
+                        if (basketServiceElement.getElementsByTagName("id").getLength() > 0) {
+                            s.setId(Long.parseLong(basketServiceElement.getElementsByTagName("id").item(0).getTextContent()));
                         }
                         s.setCost(Double.parseDouble(basketServiceElement.getElementsByTagName("cost").item(0).getTextContent()));
                         s.setDescription(basketServiceElement.getElementsByTagName("description").item(0).getTextContent());

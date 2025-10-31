@@ -14,9 +14,9 @@ public class NonPerishebleProduct {
     @XmlElement(name = "name")
     @JsonProperty("name")
     private String name;
-    @XmlElement(name = "productId")
-    @JsonProperty("productId")
-    private String productId;
+    @XmlElement(name = "id")
+    @JsonProperty("id")
+    private Long id;
     @XmlElement(name = "cost")
     @JsonProperty("cost")
     private double cost;
@@ -24,11 +24,11 @@ public class NonPerishebleProduct {
     @JsonProperty("description")
     private String description = "";
 
-    public NonPerishebleProduct(String name, double cost, String description, String productId) {
+    public NonPerishebleProduct(String name, double cost, String description, Long id) {
         this.name = name;
         this.cost = cost;
         this.description = description;
-        this.productId=productId;
+        this.id = id;
     }
 
     public NonPerishebleProduct() {
@@ -58,11 +58,11 @@ public class NonPerishebleProduct {
         this.description = description;
     }
 
-    public String getProductId() {
-        return productId;
+    public Long getId() {
+        return id;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setId(Long id) {
+        this.id = id;
     }
 }

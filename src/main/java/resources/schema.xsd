@@ -22,7 +22,7 @@
     <xs:complexType name="FoodProductType">
         <xs:sequence>
             <xs:element name="cost" type="xs:decimal"/>
-            <xs:element name="productId" type="xs:string"/>
+            <xs:element name="id" type="xs:string"/>
             <xs:element name="expirationDate" type="xs:dateTime"/>
             <xs:element name="name" type="xs:string"/>
         </xs:sequence>
@@ -39,7 +39,7 @@
             <xs:element name="name" type="xs:string"/>
             <xs:element name="cost" type="xs:decimal"/>
             <xs:element name="description" type="xs:string"/>
-            <xs:element name="productId" type="xs:string"/>
+            <xs:element name="id" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -52,7 +52,7 @@
     <xs:complexType name="DiscountedItemType">
         <xs:sequence>
             <xs:element name="name" type="xs:string"/>
-            <xs:element name="discountedItemId" type="xs:string"/>
+            <xs:element name="id" type="xs:string"/>
             <xs:element name="cost" type="xs:decimal"/>
             <xs:element name="description" type="xs:string"/>
         </xs:sequence>
@@ -67,7 +67,7 @@
     <xs:complexType name="ServiceType">
         <xs:sequence>
             <xs:element name="name" type="xs:string"/>
-            <xs:element name="serviceId" type="xs:string"/>
+            <xs:element name="id" type="xs:string"/>
             <xs:element name="cost" type="xs:decimal"/>
             <xs:element name="description" type="xs:string"/>
             <xs:element name="serviceProvider" type="xs:string"/>
@@ -83,7 +83,7 @@
     <xs:complexType name="UserType">
         <xs:sequence>
             <xs:element name="name" type="xs:string"/>
-            <xs:element name="userId" type="xs:string"/>
+            <xs:element name="id" type="xs:string"/>
             <xs:element name="debitCard" type="DebitCardType"/>
             <xs:element name="basket" type="BasketType"/>
         </xs:sequence>
@@ -100,14 +100,14 @@
     <xs:complexType name="AddressType">
         <xs:sequence>
             <xs:element name="deliveryAddress" type="xs:string"/>
-            <xs:element name="deliveryAddressId" type="xs:string"/>
+            <xs:element name="id" type="xs:string"/>
             <xs:element name="userId" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="BasketType">
         <xs:sequence>
-            <xs:element name="basketId" type="xs:string"/>
+            <xs:element name="id" type="xs:string"/>
             <xs:element name="foodProductList" type="FoodProductListType" minOccurs="0"/>
             <xs:element name="nonPerishebleProductList" type="NonPerishableProductListType" minOccurs="0"/>
             <xs:element name="discountedItemList" type="DiscountedItemListType" minOccurs="0"/>

@@ -12,7 +12,7 @@ public class DebitCard {
 
     @XmlElement(name = "cardNumber")
     @JsonProperty("cardNumber")
-    private String cardId;
+    private Long cardId;
     @XmlElement(name = "active")
     @JsonProperty("active")
     private boolean active;
@@ -21,7 +21,7 @@ public class DebitCard {
     private double moneyAmount = 0.0;
 
     public DebitCard(boolean active, double moneyAmount) {
-        this.cardId = Generator.numberGenerator();
+        this.cardId = Long.valueOf(Generator.numberGenerator());
         this.active = active;
         this.moneyAmount = moneyAmount;
     }
@@ -29,11 +29,11 @@ public class DebitCard {
     public DebitCard() {
     }
 
-    public String getCardNumber() {
+    public Long getCardNumber() {
         return cardId;
     }
 
-    public void setCardNumber(String cardNumber) {
+    public void setCardNumber(Long cardNumber) {
         this.cardId = cardNumber;
     }
 

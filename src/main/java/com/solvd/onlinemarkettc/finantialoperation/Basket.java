@@ -19,9 +19,9 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Basket {
 
-    @XmlElement(name = "basketId")
-    @JsonProperty("basketId")
-    private String basketId;
+    @XmlElement(name = "id")
+    @JsonProperty("id")
+    private Long id;
 
     @XmlElementWrapper(name = "foodProductList")
     @XmlElement(name = "FoodProduct")
@@ -57,12 +57,12 @@ public class Basket {
 
 
     public Basket() {
-        this.basketId = Generator.numberGenerator();
+        this.id = Long.valueOf(Generator.numberGenerator());
         this.date = new Date();
     }
 
-    public void setBasketId(String basketId) {
-        this.basketId = basketId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setFoodProductList(List<FoodProduct> foodProductList) {
@@ -162,7 +162,7 @@ public class Basket {
         sumCost = totalCostOfFood + totalCostOfProduct + totalCostOfDiscounted + totalCostOfServices;
     }
 
-    public String getId() {
-        return basketId;
+    public Long getId() {
+        return id;
     }
 }

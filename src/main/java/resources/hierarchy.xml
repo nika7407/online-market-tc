@@ -3,13 +3,13 @@
     <foodProducts>
         <FoodProduct>
             <cost>10.0</cost>
-            <productId>1</productId>
+            <id>1</id>
             <expirationDate>2026-12-31T00:00:00</expirationDate>
             <name>Snickers_Bar</name>
         </FoodProduct>
         <FoodProduct>
             <cost>1.8</cost>
-            <productId>2</productId>
+            <id>2</id>
             <expirationDate>2025-12-31T00:00:00</expirationDate>
             <name>White_Bread</name>
         </FoodProduct>
@@ -19,19 +19,19 @@
                 <name>Blue_Pen</name>
                 <cost>0.5</cost>
                 <description>just_blue_pen</description>
-                <productId>1</productId>
+                <id>1</id>
             </NonPerishebleProduct>
             <NonPerishebleProduct>
                 <name>Red_Pen</name>
                 <cost>0.6</cost>
                 <description>just_red_pen</description>
-                <productId>2</productId>
+                <id>2</id>
             </NonPerishebleProduct>
     </nonFoodProduct>
     <discountedItems>
             <DiscountedItem>
                 <name>Promo_Mug</name>
-                <discountedItemId>1</discountedItemId>
+                <id>1</id>
                 <cost>2.5</cost>
                 <description>limited_offer</description>
             </DiscountedItem>
@@ -39,7 +39,7 @@
     <services>
         <Service>
             <name>Home_Delivery</name>
-            <serviceId>1</serviceId>
+            <id>1</id>
             <cost>5.0</cost>
             <description>delivery_service</description>
             <serviceProvider>FastShip</serviceProvider>
@@ -48,18 +48,18 @@
     <users>
         <User>
             <name>kaxa_bedukidze</name>
-            <userId>12345678</userId>
+            <id>12345678</id>
             <debitCard>
                 <cardNumber>12345678</cardNumber>
                 <active>true</active>
                 <moneyAmount>100.0</moneyAmount>
             </debitCard>
             <basket>
-                <basketId>id1</basketId>
+                <id>1</id>
                 <foodProductList>
                     <FoodProduct>
                         <cost>10.0</cost>
-                        <productId>1</productId>
+                        <id>1</id>
                         <expirationDate>2026-12-31T00:00:00</expirationDate>
                         <name>Snickers_Bar</name>
                     </FoodProduct>
@@ -69,13 +69,13 @@
                         <name>Blue_Pen</name>
                         <cost>0.5</cost>
                         <description>just_blue_pen</description>
-                        <productId>1</productId>
+                        <id>1</id>
                     </NonPerishebleProduct>
                 </nonPerishebleProductList>
                 <discountedItemList>
                     <DiscountedItem>
                         <name>Promo_Mug</name>
-                        <discountedItemId>1</discountedItemId>
+                        <id>1</id>
                         <cost>2.5</cost>
                         <description>limited_offer</description>
                     </DiscountedItem>
@@ -83,7 +83,7 @@
                 <serviceList>
                     <Service>
                         <name>Home_Delivery</name>
-                        <serviceId>1</serviceId>
+                        <id>1</id>
                         <cost>5.0</cost>
                         <description>delivery_service</description>
                         <serviceProvider>FastShip</serviceProvider>
@@ -93,7 +93,7 @@
                 <date>2024-08-09T11:30:00</date>
                 <address>
                     <deliveryAddress>some_street</deliveryAddress>
-                    <deliveryAddressId>1</deliveryAddressId>
+                    <id>1</id>
                     <userId>12345678</userId>
                 </address>
             </basket>

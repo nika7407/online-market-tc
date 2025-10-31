@@ -1,91 +1,90 @@
 
-CREATE TABLE IF NOT EXISTS FoodProduct (
-    productId SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS food_products (
+    id SERIAL PRIMARY KEY,
     name VARCHAR(25),
     cost DOUBLE PRECISION,
-    expirationDate TIMESTAMP
+    expiration_date TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS NonPerishebleProduct (
-    productId SERIAL PRIMARY KEY,
-    name VARCHAR(25),
-    cost DOUBLE PRECISION,
-    description VARCHAR(25)
-);
-
-CREATE TABLE IF NOT EXISTS DiscountedItem (
-    discountedItemId SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS non_perishable_products (
+    id SERIAL PRIMARY KEY,
     name VARCHAR(25),
     cost DOUBLE PRECISION,
     description VARCHAR(25)
 );
 
-CREATE TABLE IF NOT EXISTS Service (
-    serviceId SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS discounted_items (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(25),
+    cost DOUBLE PRECISION,
+    description VARCHAR(25)
+);
+
+CREATE TABLE IF NOT EXISTS services (
+    id SERIAL PRIMARY KEY,
     name VARCHAR(25),
     cost DOUBLE PRECISION,
     description VARCHAR(25),
-    serviceProvider VARCHAR(25)
+    service_provider VARCHAR(25)
 );
 
-CREATE TABLE IF NOT EXISTS DebitCard (
-    cardNumber BIGINT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS debit_cards (
+    card_number BIGINT PRIMARY KEY,
     active BOOLEAN,
-    moneyAmount DOUBLE PRECISION
+    money_amount DOUBLE PRECISION
 );
 
---mtm tables written in format name of the first "table + 2 + addres" ,  im not sure if this is right bit idk 
-CREATE TABLE IF NOT EXISTS Delivery2Address (
-    deliveryAddressId SERIAL PRIMARY KEY,
-    deliveryAddress VARCHAR(50),
-    userId BIGINT
+CREATE TABLE IF NOT EXISTS delivery_addresses (
+    id SERIAL PRIMARY KEY,
+    delivery_address VARCHAR(50),
+    user_id BIGINT
 );
 
-CREATE TABLE IF NOT EXISTS Basket (
-    basketId VARCHAR(25) PRIMARY KEY,
-    sumCost DOUBLE PRECISION,
+CREATE TABLE IF NOT EXISTS baskets (
+    id VARCHAR(25) PRIMARY KEY,
+    sum_cost DOUBLE PRECISION,
     date TIMESTAMP,
-    deliveryAddressId INT,
-    FOREIGN KEY (deliveryAddressId) REFERENCES DeliveryAddress(deliveryAddressId)
+    delivery_address_id INT,
+    FOREIGN KEY (delivery_address_id) REFERENCES delivery_addresses(id)
 );
 
-CREATE TABLE IF NOT EXISTS Basket2FoodProduct (
-    basketId VARCHAR(25),
-    productId INT,
-    PRIMARY KEY (basketId, productId),
-    FOREIGN KEY (basketId) REFERENCES Basket(basketId),
-    FOREIGN KEY (productId) REFERENCES FoodProduct(productId)
+CREATE TABLE IF NOT EXISTS basket_food_products (
+    basket_id VARCHAR(25),
+    food_product_id INT,
+    PRIMARY KEY (basket_id, food_product_id),
+    FOREIGN KEY (basket_id) REFERENCES baskets(id),
+    FOREIGN KEY (food_product_id) REFERENCES food_products(id)
 );
 
-CREATE TABLE IF NOT EXISTS Basket2NonPerishebleProduct (
-    basketId VARCHAR(25),
-    productId INT,
-    PRIMARY KEY (basketId, productId),
-    FOREIGN KEY (basketId) REFERENCES Basket(basketId),
-    FOREIGN KEY (productId) REFERENCES NonPerishebleProduct(productId)
+CREATE TABLE IF NOT EXISTS basket_non_perishable_products (
+    basket_id VARCHAR(25),
+    non_perishable_product_id INT,
+    PRIMARY KEY (basket_id, non_perishable_product_id),
+    FOREIGN KEY (basket_id) REFERENCES baskets(id),
+    FOREIGN KEY (non_perishable_product_id) REFERENCES non_perishable_products(id)
 );
 
-CREATE TABLE IF NOT EXISTS Basket2DiscountedItem (
-    basketId VARCHAR(25),
-    discountedItemId INT,
-    PRIMARY KEY (basketId, discountedItemId),
-    FOREIGN KEY (basketId) REFERENCES Basket(basketId),
-    FOREIGN KEY (discountedItemId) REFERENCES DiscountedItem(discountedItemId)
+CREATE TABLE IF NOT EXISTS basket_discounted_items (
+    basket_id VARCHAR(25),
+    discounted_item_id INT,
+    PRIMARY KEY (basket_id, discounted_item_id),
+    FOREIGN KEY (basket_id) REFERENCES baskets(id),
+    FOREIGN KEY (discounted_item_id) REFERENCES discounted_items(id)
 );
 
-CREATE TABLE IF NOT EXISTS Basket2Service (
-    basketId VARCHAR(25),
-    serviceId INT,
-    PRIMARY KEY (basketId, serviceId),
-    FOREIGN KEY (basketId) REFERENCES Basket(basketId),
-    FOREIGN KEY (serviceId) REFERENCES Service(serviceId)
+CREATE TABLE IF NOT EXISTS basket_services (
+    basket_id VARCHAR(25),
+    service_id INT,
+    PRIMARY KEY (basket_id, service_id),
+    FOREIGN KEY (basket_id) REFERENCES baskets(id),
+    FOREIGN KEY (service_id) REFERENCES services(id)
 );
 
-CREATE TABLE IF NOT EXISTS Users (
-    userId BIGINT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS users (
+    id BIGINT PRIMARY KEY,
     name VARCHAR(25),
-    cardNumber BIGINT,
-    basketId VARCHAR(25),
-    FOREIGN KEY (cardNumber) REFERENCES DebitCard(cardNumber),
-    FOREIGN KEY (basketId) REFERENCES Basket(basketId)
+    card_number BIGINT,
+    basket_id VARCHAR(25),
+    FOREIGN KEY (card_number) REFERENCES debit_cards(card_number),
+    FOREIGN KEY (basket_id) REFERENCES baskets(id)
 );

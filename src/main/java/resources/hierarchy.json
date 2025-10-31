@@ -4,13 +4,13 @@
       "cost": 10.0,
       "expirationDate": "2026-12-31T00:00:00",
       "name": "Snickers_Bar",
-      "productId": "1"
+      "id": "1"
     },
     {
       "cost": 1.8,
       "expirationDate": "2025-12-31T00:00:00",
       "name": "White_Bread",
-      "productId": "2"
+      "id": "2"
     }
   ],
   "nonFoodProducts": [
@@ -18,13 +18,13 @@
       "name": "Blue_Pen",
       "cost": 0.5,
       "description": "just_blue_pen",
-      "productId": "1"
+      "id": "1"
     },
     {
       "name": "Red_Pen",
       "cost": 0.6,
       "description": "just_red_pen",
-      "productId": "2"
+      "id": "2"
     }
   ],
   "discountedItems": [
@@ -32,7 +32,7 @@
       "name": "Promo_Mug",
       "cost": 2.5,
       "description": "limited_offer",
-      "discountedItemId": "1"
+      "id": "1"
     }
   ],
   "services": [
@@ -41,26 +41,26 @@
       "cost": 5.0,
       "description": "delivery_service",
       "serviceProvider": "FastShip",
-      "serviceId": "1"
+      "id": "1"
     }
   ],
   "users": [
     {
       "name": "kaxa_bedukidze",
-      "userId": "12345678",
+      "id": "12345678",
       "debitCard": {
         "cardNumber": "12345678",
         "active": true,
         "moneyAmount": 100.0
       },
       "basket": {
-        "basketId": "id1",
+        "id": 1,
         "foodProductList": [
           {
             "cost": 10.0,
             "expirationDate": "2026-12-31T00:00:00",
             "name": "Snickers_Bar",
-            "productId": "1"
+            "id": "1"
           }
         ],
         "nonPerishebleProductList": [
@@ -68,7 +68,7 @@
             "name": "Blue_Pen",
             "cost": 0.5,
             "description": "just_blue_pen",
-            "productId": "1"
+            "id": "1"
           }
         ],
         "discountedItemList": [
@@ -76,7 +76,7 @@
             "name": "Promo_Mug",
             "cost": 2.5,
             "description": "limited_offer",
-            "discountedItemId": "1"
+            "id": "1"
           }
         ],
         "serviceList": [
@@ -85,14 +85,14 @@
             "cost": 5.0,
             "description": "delivery_service",
             "serviceProvider": "FastShip",
-            "serviceId": "1"
+            "id": "1"
           }
         ],
         "sumCost": 10.5,
         "date": "2024-08-09T11:30:00",
         "address": {
           "deliveryAddress": "some_street",
-          "deliveryAddressId": "1",
+          "id": "1",
           "userId": "12345678"
         }
       }

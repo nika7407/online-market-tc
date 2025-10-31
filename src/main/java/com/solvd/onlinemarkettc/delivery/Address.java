@@ -16,9 +16,9 @@ public class Address {
     @JsonProperty("deliveryAddress")
     private String deliveryAddress;
 
-    @XmlElement(name = "deliveryAddressId")
-    @JsonProperty("deliveryAddressId")
-    private String deliveryAddressId;
+    @XmlElement(name = "id")
+    @JsonProperty("id")
+    private Long id;
 
 
     @XmlElement(name = "userId")
@@ -51,12 +51,12 @@ public class Address {
         this.deliveryAddress = deliveryAddress;
     }
 
-    public String getDeliveryAddressId() {
-        return deliveryAddressId;
+    public Long getId() {
+        return id;
     }
 
-    public void setDeliveryAddressId(String deliveryAddressId) {
-        this.deliveryAddressId = deliveryAddressId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUserId() {

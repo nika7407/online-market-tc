@@ -15,9 +15,9 @@ public class User {
     @XmlElement(name = "name")
     @JsonProperty("name")
     private String name;
-    @XmlElement(name = "userId")
-    @JsonProperty("userId")
-    private String userId;
+    @XmlElement(name = "id")
+    @JsonProperty("id")
+    private Long id;
     @XmlElement(name = "debitCard")
     @JsonProperty("debitCard")
     private DebitCard debitCard;
@@ -29,14 +29,14 @@ public class User {
         this.name = name;
         this.debitCard = debitCard;
         this.basket = basket;
-        this.userId = Generator.numberGenerator();
+        this.id = Long.valueOf(Generator.numberGenerator());
     }
 
     public User() {
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -63,7 +63,7 @@ public class User {
         this.basket = basket;
     }
 
-    public String getUserId() {
-        return userId;
+    public Long getId() {
+        return id;
     }
 }
