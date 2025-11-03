@@ -1,3 +1,15 @@
+DROP TABLE IF EXISTS basket_services CASCADE;
+DROP TABLE IF EXISTS basket_discounted_items CASCADE;
+DROP TABLE IF EXISTS basket_non_perishable_products CASCADE;
+DROP TABLE IF EXISTS basket_food_products CASCADE;
+DROP TABLE IF EXISTS baskets CASCADE;
+DROP TABLE IF EXISTS delivery_addresses CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS debit_cards CASCADE;
+DROP TABLE IF EXISTS services CASCADE;
+DROP TABLE IF EXISTS discounted_items CASCADE;
+DROP TABLE IF EXISTS non_perishable_products CASCADE;
+DROP TABLE IF EXISTS food_products CASCADE;
 
 CREATE TABLE IF NOT EXISTS food_products (
     id SERIAL PRIMARY KEY,
