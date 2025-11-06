@@ -162,8 +162,8 @@ public class Dparser {
                 if (addressElement.getElementsByTagName("id").getLength() > 0) {
                     address.setId(Long.parseLong(addressElement.getElementsByTagName("id").item(0).getTextContent()));
                 }
-                if (addressElement.getElementsByTagName("id").getLength() > 0) {
-                    address.setUserId(addressElement.getElementsByTagName("id").item(0).getTextContent());
+                if (addressElement.getElementsByTagName("userId").getLength() > 0) {
+                    address.setUserId(addressElement.getElementsByTagName("userId").item(0).getTextContent());
                 }
                 basket.setAddress(address);
 
