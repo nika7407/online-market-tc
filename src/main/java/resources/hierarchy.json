@@ -3,31 +3,36 @@
     {
       "cost": 10.0,
       "expirationDate": "2026-12-31T00:00:00",
-      "name": "Snickers_Bar"
+      "name": "Snickers_Bar",
+      "id": "1"
     },
     {
       "cost": 1.8,
       "expirationDate": "2025-12-31T00:00:00",
-      "name": "White_Bread"
+      "name": "White_Bread",
+      "id": "2"
     }
   ],
   "nonFoodProducts": [
     {
       "name": "Blue_Pen",
       "cost": 0.5,
-      "description": "just_blue_pen"
+      "description": "just_blue_pen",
+      "id": "1"
     },
     {
       "name": "Red_Pen",
       "cost": 0.6,
-      "description": "just_red_pen"
+      "description": "just_red_pen",
+      "id": "2"
     }
   ],
   "discountedItems": [
     {
       "name": "Promo_Mug",
       "cost": 2.5,
-      "description": "limited_offer"
+      "description": "limited_offer",
+      "id": "1"
     }
   ],
   "services": [
@@ -35,7 +40,8 @@
       "name": "Home_Delivery",
       "cost": 5.0,
       "description": "delivery_service",
-      "serviceProvider": "FastShip"
+      "serviceProvider": "FastShip",
+      "id": "1"
     }
   ],
   "users": [
@@ -53,21 +59,24 @@
           {
             "cost": 10.0,
             "expirationDate": "2026-12-31T00:00:00",
-            "name": "Snickers_Bar"
+            "name": "Snickers_Bar",
+            "id": "1"
           }
         ],
         "nonPerishebleProductList": [
           {
             "name": "Blue_Pen",
             "cost": 0.5,
-            "description": "just_blue_pen"
+            "description": "just_blue_pen",
+            "id": "1"
           }
         ],
         "discountedItemList": [
           {
             "name": "Promo_Mug",
             "cost": 2.5,
-            "description": "limited_offer"
+            "description": "limited_offer",
+            "id": "1"
           }
         ],
         "serviceList": [
@@ -75,13 +84,15 @@
             "name": "Home_Delivery",
             "cost": 5.0,
             "description": "delivery_service",
-            "serviceProvider": "FastShip"
+            "serviceProvider": "FastShip",
+            "id": "1"
           }
         ],
         "sumCost": 10.5,
         "date": "2024-08-09T11:30:00",
         "address": {
           "deliveryAddress": "some_street",
+          "id": "1",
           "userId": "12345678"
         }
       }
