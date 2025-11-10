@@ -58,12 +58,24 @@ public class OnlineShop {
         return foodProducts;
     }
 
+    public void setFoodProducts(List<FoodProduct> foodProducts) {
+        this.foodProducts = foodProducts;
+    }
+
     public List<NonPerishebleProduct> getNonFoodProduct() {
         return nonFoodProduct;
     }
 
+    public void setNonFoodProduct(List<NonPerishebleProduct> nonFoodProduct) {
+        this.nonFoodProduct = nonFoodProduct;
+    }
+
     public List<User> getUsers() {
         return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public boolean addToBasket(FoodProduct foodProduct, Basket basket) {
@@ -83,18 +95,6 @@ public class OnlineShop {
 
     public void addNonFoodProduct(NonPerishebleProduct product, int amount) {
         nonFoodProduct.add(product);
-    }
-
-    public void setFoodProducts(List<FoodProduct> foodProducts) {
-        this.foodProducts = foodProducts;
-    }
-
-    public void setNonFoodProduct(List<NonPerishebleProduct> nonFoodProduct) {
-        this.nonFoodProduct = nonFoodProduct;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
     }
 
     public void addUser(User user) {

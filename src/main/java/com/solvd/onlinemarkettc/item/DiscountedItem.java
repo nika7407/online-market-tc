@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DiscountedItem {
@@ -25,6 +24,13 @@ public class DiscountedItem {
 
     public DiscountedItem(String name, double cost, String description) {
         this.name = name;
+        this.cost = cost;
+        this.description = description;
+    }
+
+    public DiscountedItem(String name, Long id, double cost, String description) {
+        this.name = name;
+        this.id = id;
         this.cost = cost;
         this.description = description;
     }

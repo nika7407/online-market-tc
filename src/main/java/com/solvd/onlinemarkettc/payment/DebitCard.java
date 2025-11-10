@@ -29,6 +29,12 @@ public class DebitCard {
     public DebitCard() {
     }
 
+    public DebitCard(Long cardId, boolean active, double moneyAmount) {
+        this.cardId = cardId;
+        this.active = active;
+        this.moneyAmount = moneyAmount;
+    }
+
     public Long getCardNumber() {
         return cardId;
     }

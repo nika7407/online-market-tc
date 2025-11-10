@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.time.Instant;
 import java.util.Date;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -34,6 +35,14 @@ public class FoodProduct {
         this.cost = cost;
         this.name = name;
         this.id = id;
+        this.expirationDate = Date.from(Instant.now());
+
+    }
+
+    public FoodProduct(double cost, String name) {
+        this.cost = cost;
+        this.name = name;
+        this.expirationDate = Date.from(Instant.now());
     }
 
     public FoodProduct() {

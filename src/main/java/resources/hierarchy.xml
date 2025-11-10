@@ -15,26 +15,26 @@
         </FoodProduct>
     </foodProducts>
     <nonFoodProduct>
-            <NonPerishebleProduct>
-                <name>Blue_Pen</name>
-                <cost>0.5</cost>
-                <description>just_blue_pen</description>
-                <id>1</id>
-            </NonPerishebleProduct>
-            <NonPerishebleProduct>
-                <name>Red_Pen</name>
-                <cost>0.6</cost>
-                <description>just_red_pen</description>
-                <id>2</id>
-            </NonPerishebleProduct>
+        <NonPerishebleProduct>
+            <name>Blue_Pen</name>
+            <cost>0.5</cost>
+            <description>just_blue_pen</description>
+            <id>1</id>
+        </NonPerishebleProduct>
+        <NonPerishebleProduct>
+            <name>Red_Pen</name>
+            <cost>0.6</cost>
+            <description>just_red_pen</description>
+            <id>2</id>
+        </NonPerishebleProduct>
     </nonFoodProduct>
     <discountedItems>
-            <DiscountedItem>
-                <name>Promo_Mug</name>
-                <id>1</id>
-                <cost>2.5</cost>
-                <description>limited_offer</description>
-            </DiscountedItem>
+        <DiscountedItem>
+            <name>Promo_Mug</name>
+            <id>1</id>
+            <cost>2.5</cost>
+            <description>limited_offer</description>
+        </DiscountedItem>
     </discountedItems>
     <services>
         <Service>

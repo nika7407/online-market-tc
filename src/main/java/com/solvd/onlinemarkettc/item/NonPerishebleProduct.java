@@ -31,6 +31,12 @@ public class NonPerishebleProduct {
         this.id = id;
     }
 
+    public NonPerishebleProduct(String name, double cost, String description) {
+        this.name = name;
+        this.cost = cost;
+        this.description = description;
+    }
+
     public NonPerishebleProduct() {
     }
 

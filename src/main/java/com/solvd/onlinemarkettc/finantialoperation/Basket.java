@@ -61,20 +61,22 @@ public class Basket {
         this.date = new Date();
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setFoodProductList(List<FoodProduct> foodProductList) {
+    public Basket(List<FoodProduct> foodProductList, List<NonPerishebleProduct> nonPerishebleProductList, List<DiscountedItem> discountedItemList, List<Service> serviceList, double sumCost, Date date, Address address) {
         this.foodProductList = foodProductList;
-    }
-
-    public void setNonPerishebleProductList(List<NonPerishebleProduct> nonPerishebleProductList) {
         this.nonPerishebleProductList = nonPerishebleProductList;
+        this.discountedItemList = discountedItemList;
+        this.serviceList = serviceList;
+        this.sumCost = sumCost;
+        this.date = date;
+        this.address = address;
     }
 
     public List<FoodProduct> getFoodProductList() {
         return foodProductList;
+    }
+
+    public void setFoodProductList(List<FoodProduct> foodProductList) {
+        this.foodProductList = foodProductList;
     }
 
     public void addFoodProduct(FoodProduct foodProduct) {
@@ -89,6 +91,10 @@ public class Basket {
 
     public List<NonPerishebleProduct> getNonPerishebleProductList() {
         return nonPerishebleProductList;
+    }
+
+    public void setNonPerishebleProductList(List<NonPerishebleProduct> nonPerishebleProductList) {
+        this.nonPerishebleProductList = nonPerishebleProductList;
     }
 
     public double getSumCost() {
@@ -164,6 +170,10 @@ public class Basket {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }

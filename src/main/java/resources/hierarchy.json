@@ -57,7 +57,7 @@
         "id": 1,
         "foodProductList": [
           {
-            "cost": 10.0,
+            "cost": 24.0,
             "expirationDate": "2026-12-31T00:00:00",
             "name": "Snickers_Bar",
             "id": "1"

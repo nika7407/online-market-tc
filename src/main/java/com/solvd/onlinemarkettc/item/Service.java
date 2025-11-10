@@ -43,6 +43,14 @@ public class Service {
         this.serviceProvider = serviceProvider;
     }
 
+    public Service(String name, Long id, double cost, String description, String serviceProvider) {
+        this.name = name;
+        this.id = id;
+        this.cost = cost;
+        this.description = description;
+        this.serviceProvider = serviceProvider;
+    }
+
     public String getName() {
         return name;
     }

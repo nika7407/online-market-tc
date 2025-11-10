@@ -6,7 +6,7 @@ INSERT INTO food_products(name, cost, expiration_date)
 VALUES ('bread', 3.0, '2024-02-15 00:00:00');
 
 INSERT INTO non_perishable_products(name, cost, description)
-VALUES ('bicycle', 200, 'bicycle for riding');
+VALUES ('bicycle', 200, 'bicycle for ridthreading');
 
 INSERT INTO discounted_items(name, cost, description)
 VALUES ('rotten eggs', 0.5, 'eggs that are rotten');

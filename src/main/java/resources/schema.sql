@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS basket_discounted_items (
     discounted_item_id INT,
     PRIMARY KEY (basket_id, discounted_item_id),
     FOREIGN KEY (basket_id) REFERENCES baskets(id),
-    FOREIGN KEY (discounted_item_id) REFERENCES discounted_items(id)
+    FOREIGN KEY (discounted_itema_id) REFERENCES discounted_items(id)
 );
 
 CREATE TABLE IF NOT EXISTS basket_services (

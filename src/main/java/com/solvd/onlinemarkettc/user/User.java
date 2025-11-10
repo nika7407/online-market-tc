@@ -32,11 +32,13 @@ public class User {
         this.id = Long.valueOf(Generator.numberGenerator());
     }
 
-    public User() {
+    public User(DebitCard debitCard, Basket basket, String name) {
+        this.debitCard = debitCard;
+        this.basket = basket;
+        this.name = name;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public User() {
     }
 
     public String getName() {
@@ -65,5 +67,9 @@ public class User {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

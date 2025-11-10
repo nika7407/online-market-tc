@@ -28,6 +28,12 @@ public class Address {
     public Address() {
     }
 
+    public Address(String deliveryAddress, Long id, String userId) {
+        this.deliveryAddress = deliveryAddress;
+        this.id = id;
+        this.userId = userId;
+    }
+
     public Address(String deliveryAdress, String userId) {
         this.deliveryAddress = deliveryAdress;
         this.userId = userId;
