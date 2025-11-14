@@ -1,12 +1,13 @@
-package com.solvd.onlinemarkettc.persistence.repository;
+package com.solvd.onlinemarkettc.persistence.impl;
 
-import com.solvd.onlinemarkettc.persistence.connection.Connection;
-import com.solvd.onlinemarkettc.persistence.connection.Pool;
-import com.solvd.onlinemarkettc.domain.finantialoperation.Basket;
 import com.solvd.onlinemarkettc.domain.item.DiscountedItem;
 import com.solvd.onlinemarkettc.domain.item.FoodProduct;
 import com.solvd.onlinemarkettc.domain.item.NonPerishebleProduct;
 import com.solvd.onlinemarkettc.domain.item.Service;
+import com.solvd.onlinemarkettc.persistence.BasketRepository;
+import com.solvd.onlinemarkettc.persistence.connection.Connection;
+import com.solvd.onlinemarkettc.persistence.connection.Pool;
+import com.solvd.onlinemarkettc.domain.finantialoperation.Basket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,9 +20,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class BasketRepository implements Repository<Basket> {
+public class BasketRepositoryImpl implements BasketRepository {
 
-    private static final Logger log = LogManager.getLogger(BasketRepository.class);
+    private static final Logger log = LogManager.getLogger(BasketRepositoryImpl.class);
     private static final Pool connectionPool = Pool.getInstance(4);
 
     @Override
@@ -78,14 +79,20 @@ public class BasketRepository implements Repository<Basket> {
 
         try {
             connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
-            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlSave)) {
+            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlSave, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 statement.setDouble(1, basket.getSumCost());
                 statement.setTimestamp(2, new Timestamp(basket.getDate().getTime()));
                 statement.setObject(3, basket.getAddress().getId());
 
                 int affectedRows = statement.executeUpdate();
                 if (affectedRows > 0) {
-                    log.info("inserted id {}", basket.getId());
+                    try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            Long generatedId = generatedKeys.getLong(1);
+                            basket.setId(generatedId);
+                            log.info("inserted basket id {}", generatedId);
+                        }
+                    }
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -109,9 +116,9 @@ public class BasketRepository implements Repository<Basket> {
                 statement.setLong(1, id);
                 int affectedRows = statement.executeUpdate();
                 if (affectedRows > 0) {
-                    log.info("deleted  id {}", id);
+                    log.info("deleted basket id {}", id);
                 } else {
-                    log.warn("not found id {}", id);
+                    log.warn("not found basket id {}", id);
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -133,14 +140,14 @@ public class BasketRepository implements Repository<Basket> {
             try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlUpdate)) {
                 statement.setDouble(1, basket.getSumCost());
                 statement.setTimestamp(2, new Timestamp(basket.getDate().getTime()));
-                statement.setObject(3, null);
-                statement.setString(4, basket.getId().toString());
+                statement.setObject(3, basket.getAddress().getId());
+                statement.setLong(4, basket.getId());
 
                 int affectedRows = statement.executeUpdate();
                 if (affectedRows > 0) {
-                    log.info("updated id {}", basket.getId());
+                    log.info("updated basket id {}", basket.getId());
                 } else {
-                    log.warn("not found id {}", basket.getId());
+                    log.warn("not found basket id {}", basket.getId());
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -153,79 +160,183 @@ public class BasketRepository implements Repository<Basket> {
         return basket;
     }
 
-    public Basket saveWithItems(Basket basket) {
+    public void addFoodProductToBasket(Long basketId, Long foodProductId) {
+        String sqlInsert = "INSERT INTO basket_food_products(basket_id, food_product_id) VALUES (?, ?)";
         Connection connection = null;
 
         try {
-            connection = connectionPool.getConnection(10, TimeUnit.SECONDS);
-
-            String insertBasket = "INSERT INTO baskets(sum_cost, date, delivery_address_id) VALUES (?, ?, ?)";
-            Long generatedBasketId = null;
-
-            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(insertBasket, PreparedStatement.RETURN_GENERATED_KEYS)) {
-                statement.setDouble(1, basket.getSumCost());
-                statement.setTimestamp(2, new Timestamp(basket.getDate().getTime()));
-                statement.setInt(3, basket.getAddress().getId().intValue());
+            connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
+            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlInsert)) {
+                statement.setLong(1, basketId);
+                statement.setLong(2, foodProductId);
                 statement.executeUpdate();
-
-                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        generatedBasketId = (long) generatedKeys.getInt(4);
-                        basket.setId(generatedBasketId);
-                        log.info("generated basket id {}", generatedBasketId);
-                    }
-                }
+                log.info("added food product {} to basket {}", foodProductId, basketId);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-
-            String insertFood = "INSERT INTO basket_food_products(basket_id, food_product_id) VALUES (?, ?)";
-            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(insertFood)) {
-                for (FoodProduct food : basket.getFoodProductList()) {
-                    statement.setLong(1, generatedBasketId);
-                    statement.setLong(2, food.getId());
-                    statement.addBatch();
-                }
-                statement.executeBatch();
-            }
-
-            String insertNonPerishable = "INSERT INTO basket_non_perishable_products(basket_id, non_perishable_product_id) VALUES (?, ?)";
-            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(insertNonPerishable)) {
-                for (NonPerishebleProduct product : basket.getNonPerishebleProductList()) {
-                    statement.setLong(1, generatedBasketId);
-                    statement.setLong(2, product.getId());
-                    statement.addBatch();
-                }
-                statement.executeBatch();
-            }
-
-            String insertDiscounted = "INSERT INTO basket_discounted_items(basket_id, discounted_item_id) VALUES (?, ?)";
-            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(insertDiscounted)) {
-                for (DiscountedItem item : basket.getDiscountedItemList()) {
-                    statement.setLong(1, generatedBasketId);
-                    statement.setLong(2, item.getId());
-                    statement.addBatch();
-                }
-                statement.executeBatch();
-            }
-
-            String insertServices = "INSERT INTO basket_services(basket_id, service_id) VALUES (?, ?)";
-            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(insertServices)) {
-                for (Service service : basket.getServiceList()) {
-                    statement.setLong(1, generatedBasketId);
-                    statement.setLong(2, service.getId());
-                    statement.addBatch();
-                }
-                statement.executeBatch();
-            }
-            log.info("basket updated with all items list id {}", generatedBasketId);
-
-        } catch (SQLException | InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return basket;
     }
 
+    public void addNonPerishableProductToBasket(Long basketId, Long nonPerishableProductId) {
+        String sqlInsert = "INSERT INTO basket_non_perishable_products(basket_id, non_perishable_product_id) VALUES (?, ?)";
+        Connection connection = null;
+
+        try {
+            connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
+            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlInsert)) {
+                statement.setLong(1, basketId);
+                statement.setLong(2, nonPerishableProductId);
+                statement.executeUpdate();
+                log.info("added non-perishable product {} to basket {}", nonPerishableProductId, basketId);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(connection);
+        }
+    }
+
+    public void addDiscountedItemToBasket(Long basketId, Long discountedItemId) {
+        String sqlInsert = "INSERT INTO basket_discounted_items(basket_id, discounted_item_id) VALUES (?, ?)";
+        Connection connection = null;
+
+        try {
+            connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
+            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlInsert)) {
+                statement.setLong(1, basketId);
+                statement.setLong(2, discountedItemId);
+                statement.executeUpdate();
+                log.info("added discounted item {} to basket {}", discountedItemId, basketId);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(connection);
+        }
+    }
+
+    public void addServiceToBasket(Long basketId, Long serviceId) {
+        String sqlInsert = "INSERT INTO basket_services(basket_id, service_id) VALUES (?, ?)";
+        Connection connection = null;
+
+        try {
+            connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
+            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlInsert)) {
+                statement.setLong(1, basketId);
+                statement.setLong(2, serviceId);
+                statement.executeUpdate();
+                log.info("added service {} to basket {}", serviceId, basketId);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(connection);
+        }
+    }
+
+    public List<Long> findFoodProductIdsByBasketId(Long basketId) {
+        String sqlSelect = "SELECT food_product_id FROM basket_food_products WHERE basket_id=?";
+        List<Long> foodProductIds = new ArrayList<>();
+        Connection conn = null;
+        try {
+            conn = connectionPool.getConnection(10, TimeUnit.SECONDS);
+            try (PreparedStatement statement = conn.getSqlConnection().prepareStatement(sqlSelect)) {
+                statement.setLong(1, basketId);
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    foodProductIds.add(resultSet.getLong("food_product_id"));
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(conn);
+        }
+        return foodProductIds;
+    }
+
+    public List<Long> findNonPerishableProductIdsByBasketId(Long basketId) {
+        String sqlSelect = "SELECT non_perishable_product_id FROM basket_non_perishable_products WHERE basket_id=?";
+        List<Long> productIds = new ArrayList<>();
+        Connection conn = null;
+        try {
+            conn = connectionPool.getConnection(10, TimeUnit.SECONDS);
+            try (PreparedStatement statement = conn.getSqlConnection().prepareStatement(sqlSelect)) {
+                statement.setLong(1, basketId);
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    productIds.add(resultSet.getLong("non_perishable_product_id"));
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(conn);
+        }
+        return productIds;
+    }
+
+    public List<Long> findDiscountedItemIdsByBasketId(Long basketId) {
+        String sqlSelect = "SELECT discounted_item_id FROM basket_discounted_items WHERE basket_id=?";
+        List<Long> itemIds = new ArrayList<>();
+        Connection conn = null;
+        try {
+            conn = connectionPool.getConnection(10, TimeUnit.SECONDS);
+            try (PreparedStatement statement = conn.getSqlConnection().prepareStatement(sqlSelect)) {
+                statement.setLong(1, basketId);
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    itemIds.add(resultSet.getLong("discounted_item_id"));
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(conn);
+        }
+        return itemIds;
+    }
+
+    public List<Long> findServiceIdsByBasketId(Long basketId) {
+        String sqlSelect = "SELECT service_id FROM basket_services WHERE basket_id=?";
+        List<Long> serviceIds = new ArrayList<>();
+        Connection conn = null;
+        try {
+            conn = connectionPool.getConnection(10, TimeUnit.SECONDS);
+            try (PreparedStatement statement = conn.getSqlConnection().prepareStatement(sqlSelect)) {
+                statement.setLong(1, basketId);
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    serviceIds.add(resultSet.getLong("service_id"));
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            connectionPool.releaseConnection(conn);
+        }
+        return serviceIds;
+    }
+
+    @Override
     public Basket findBasketWithAllItems(Long basketId) {
         String sqlSelect = """
                 SELECT 
@@ -325,7 +436,7 @@ public class BasketRepository implements Repository<Basket> {
 
     private Basket mapResultSetToBasket(ResultSet resultSet) throws SQLException {
         Basket basket = new Basket();
-        basket.setId(Long.valueOf(resultSet.getString("id")));
+        basket.setId(resultSet.getLong("id"));
         basket.setSumCost(resultSet.getDouble("sum_cost"));
         basket.setDate(resultSet.getTimestamp("date"));
         return basket;

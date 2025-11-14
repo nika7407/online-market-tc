@@ -1,8 +1,8 @@
-package com.solvd.onlinemarkettc.service.implementation;
+package com.solvd.onlinemarkettc.service.impl;
 
 import com.solvd.onlinemarkettc.domain.item.NonPerishebleProduct;
-import com.solvd.onlinemarkettc.persistence.repository.NonPerishableProductRepository;
-import com.solvd.onlinemarkettc.service.interfaces.NonPerishableProductService;
+import com.solvd.onlinemarkettc.persistence.impl.NonPerishableProductRepositoryImpl;
+import com.solvd.onlinemarkettc.service.NonPerishableProductService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,46 +12,54 @@ import java.util.Optional;
 public class NonPerishableProductServiceImpl implements NonPerishableProductService {
 
     private static final Logger log = LogManager.getLogger(NonPerishableProductServiceImpl.class);
-    private final NonPerishableProductRepository nonPerishableProductRepository;
+    private final NonPerishableProductRepositoryImpl nonPerishableProductRepository;
 
     public NonPerishableProductServiceImpl() {
-        this.nonPerishableProductRepository = new NonPerishableProductRepository();
+        this.nonPerishableProductRepository = new NonPerishableProductRepositoryImpl();
     }
 
+    @Override
     public NonPerishebleProduct createNonPerishableProduct(NonPerishebleProduct product) {
         log.info("create product: {}", product.getName());
         return nonPerishableProductRepository.save(product);
     }
 
+    @Override
     public Optional<NonPerishebleProduct> getNonPerishableProductById(Long id) {
         log.debug("find product id: {}", id);
         return nonPerishableProductRepository.findById(id);
     }
 
+    @Override
     public Optional<NonPerishebleProduct> getNonPerishableProductByName(String name) {
         log.debug("find product name: {}", name);
         return nonPerishableProductRepository.findByName(name);
     }
 
+    @Override
     public List<NonPerishebleProduct> getAllNonPerishableProducts() {
         log.debug("get all products");
         return nonPerishableProductRepository.findAll();
     }
 
+    @Override
     public NonPerishebleProduct updateNonPerishableProduct(NonPerishebleProduct product) {
         log.info("update product id: {}", product.getId());
         return nonPerishableProductRepository.update(product);
     }
 
+    @Override
     public void deleteNonPerishableProduct(Long id) {
         log.info("delete product id: {}", id);
         nonPerishableProductRepository.deleteById(id);
     }
 
+    @Override
     public boolean nonPerishableProductExists(Long id) {
         return nonPerishableProductRepository.findById(id).isPresent();
     }
 
+    @Override
     public boolean nonPerishableProductExistsByName(String name) {
         return nonPerishableProductRepository.findByName(name).isPresent();
     }

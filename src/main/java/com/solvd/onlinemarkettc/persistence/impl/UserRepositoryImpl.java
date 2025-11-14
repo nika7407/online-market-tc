@@ -1,8 +1,9 @@
-package com.solvd.onlinemarkettc.persistence.repository;
+package com.solvd.onlinemarkettc.persistence.impl;
 
+import com.solvd.onlinemarkettc.domain.user.User;
+import com.solvd.onlinemarkettc.persistence.UserRepository;
 import com.solvd.onlinemarkettc.persistence.connection.Connection;
 import com.solvd.onlinemarkettc.persistence.connection.Pool;
-import com.solvd.onlinemarkettc.domain.item.FoodProduct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,16 +15,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class FoodProductRepository implements Repository<FoodProduct> {
+public class UserRepositoryImpl implements UserRepository {
 
-    private static final Logger log = LogManager.getLogger(FoodProductRepository.class);
+    private static final Logger log = LogManager.getLogger(UserRepositoryImpl.class);
     private static final Pool connectionPool = Pool.getInstance(4);
 
-
     @Override
-    public Optional<FoodProduct> findById(Long id) {
-        String sqlSelect = "SELECT * FROM food_products WHERE id=?";
-        Optional<FoodProduct> foodProductOptional = Optional.empty();
+    public Optional<User> findById(Long id) {
+        String sqlSelect = "SELECT * FROM users WHERE id=?";
+        Optional<User> userOptional = Optional.empty();
         Connection conn = null;
         try {
             conn = connectionPool.getConnection(10, TimeUnit.SECONDS);
@@ -31,9 +31,8 @@ public class FoodProductRepository implements Repository<FoodProduct> {
                 statement.setLong(1, id);
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
-                    return Optional.of(mapResultSetToFoodProduct(resultSet));
+                    return Optional.of(mapResultSetToUser(resultSet));
                 }
-
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -42,12 +41,13 @@ public class FoodProductRepository implements Repository<FoodProduct> {
         } finally {
             connectionPool.releaseConnection(conn);
         }
-        return foodProductOptional;
+        return userOptional;
     }
 
-    public Optional<FoodProduct> findByName(String name) {
-        String sqlSelect = "SELECT * FROM food_products WHERE name=?";
-        Optional<FoodProduct> foodProductOptional = Optional.empty();
+    @Override
+    public Optional<User> findByName(String name) {
+        String sqlSelect = "SELECT * FROM users WHERE name=?";
+        Optional<User> userOptional = Optional.empty();
         Connection conn = null;
         try {
             conn = connectionPool.getConnection(10, TimeUnit.SECONDS);
@@ -55,9 +55,8 @@ public class FoodProductRepository implements Repository<FoodProduct> {
                 statement.setString(1, name);
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
-                    return Optional.of(mapResultSetToFoodProduct(resultSet));
+                    return Optional.of(mapResultSetToUser(resultSet));
                 }
-
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -66,20 +65,20 @@ public class FoodProductRepository implements Repository<FoodProduct> {
         } finally {
             connectionPool.releaseConnection(conn);
         }
-        return foodProductOptional;
+        return userOptional;
     }
 
     @Override
-    public List<FoodProduct> findAll() {
-        String sqlSelectAll = "SELECT * FROM food_products";
-        List<FoodProduct> foodProductList = new ArrayList<>();
+    public List<User> findAll() {
+        String sqlSelectAll = "SELECT * FROM users";
+        List<User> userList = new ArrayList<>();
         Connection connection = null;
         try {
             connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
             try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlSelectAll)) {
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
-                    foodProductList.add(mapResultSetToFoodProduct(resultSet));
+                    userList.add(mapResultSetToUser(resultSet));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -89,39 +88,25 @@ public class FoodProductRepository implements Repository<FoodProduct> {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return foodProductList;
+        return userList;
     }
 
-    @Override
-    public FoodProduct save(FoodProduct foodProduct) {
-        String sqlSaveFood = "INSERT INTO food_products(name, cost, expiration_date) VALUES (?, ?, ?)";
 
-        if (foodProduct.getName() != null) {
-            Optional<FoodProduct> existingProduct = findByName(foodProduct.getName());
-            if (existingProduct.isPresent()) {
-                log.info("product id {} already exists", existingProduct.get().getId());
-                return existingProduct.get();
-            }
-        }
+    @Override
+    public User save(User user) {
+        String sqlSave = "INSERT INTO users(name, card_number, basket_id) VALUES (?, ?, ?) RETURNING id";
 
         Connection connection = null;
         try {
             connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
-            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlSaveFood, PreparedStatement.RETURN_GENERATED_KEYS)) {
-                statement.setString(1, foodProduct.getName());
-                statement.setDouble(2, foodProduct.getCost());
-                statement.setDate(3, new java.sql.Date(foodProduct.getExpirationDate().getTime()));
+            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlSave)) {
+                statement.setString(1, user.getName());
+                statement.setLong(2, user.getDebitCard().getCardNumber());
+                statement.setLong(3, user.getBasket().getId());
 
-                int affectedRows = statement.executeUpdate();
-
-                if (affectedRows > 0) {
-                    try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                        if (generatedKeys.next()) {
-                            Long generatedId = generatedKeys.getLong(1);
-                            foodProduct.setId(generatedId);
-                            log.info("inserted food id {}", generatedId);
-                        }
-                    }
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    user.setId(resultSet.getLong("id"));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -131,12 +116,12 @@ public class FoodProductRepository implements Repository<FoodProduct> {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return foodProduct;
+        return user;
     }
 
     @Override
     public void deleteById(Long id) {
-        String sqlDelete = "DELETE FROM food_products WHERE id=?";
+        String sqlDelete = "DELETE FROM users WHERE id=?";
         Connection connection = null;
 
         try {
@@ -145,9 +130,9 @@ public class FoodProductRepository implements Repository<FoodProduct> {
                 statement.setLong(1, id);
                 int affectedRows = statement.executeUpdate();
                 if (affectedRows > 0) {
-                    log.info("deleted food product with id {}", id);
+                    log.info("deleted user id {}", id);
                 } else {
-                    log.warn("no food product found with id {}", id);
+                    log.warn("not found user with id {}", id);
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -160,23 +145,23 @@ public class FoodProductRepository implements Repository<FoodProduct> {
     }
 
     @Override
-    public FoodProduct update(FoodProduct foodProduct) {
-        String sqlUpdate = "UPDATE food_products SET name = ?, cost = ?, expiration_date = ? WHERE id = ?";
+    public User update(User user) {
+        String sqlUpdate = "UPDATE users SET name = ?, card_number = ?, basket_id = ? WHERE id = ?";
         Connection connection = null;
 
         try {
             connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
             try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlUpdate)) {
-                statement.setString(1, foodProduct.getName());
-                statement.setDouble(2, foodProduct.getCost());
-                statement.setDate(3, new java.sql.Date(foodProduct.getExpirationDate().getTime()));
-                statement.setLong(4, foodProduct.getId());
+                statement.setString(1, user.getName());
+                statement.setLong(2, user.getDebitCard().getCardNumber());
+                statement.setLong(3, user.getBasket().getId());
+                statement.setLong(4, user.getId());
 
                 int affectedRows = statement.executeUpdate();
                 if (affectedRows > 0) {
-                    log.info("updated id {}", foodProduct.getId());
+                    log.info("updated user id {}", user.getId());
                 } else {
-                    log.warn("not found id {}", foodProduct.getId());
+                    log.warn("not found user with  id {}", user.getId());
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -186,16 +171,13 @@ public class FoodProductRepository implements Repository<FoodProduct> {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return foodProduct;
+        return user;
     }
 
-    private FoodProduct mapResultSetToFoodProduct(ResultSet resultSet) throws SQLException {
-        FoodProduct foodProduct = new FoodProduct();
-
-        foodProduct.setId(resultSet.getLong("id"));
-        foodProduct.setName(resultSet.getString("name"));
-        foodProduct.setCost(resultSet.getDouble("cost"));
-        foodProduct.setExpirationDate(resultSet.getTimestamp("expiration_date"));
-        return foodProduct;
+    private User mapResultSetToUser(ResultSet resultSet) throws SQLException {
+        User user = new User();
+        user.setId(resultSet.getLong("id"));
+        user.setName(resultSet.getString("name"));
+        return user;
     }
 }

@@ -1,8 +1,9 @@
-package com.solvd.onlinemarkettc.persistence.repository;
+package com.solvd.onlinemarkettc.persistence.impl;
 
+import com.solvd.onlinemarkettc.domain.item.NonPerishebleProduct;
+import com.solvd.onlinemarkettc.persistence.NonPerishableProductRepository;
 import com.solvd.onlinemarkettc.persistence.connection.Connection;
 import com.solvd.onlinemarkettc.persistence.connection.Pool;
-import com.solvd.onlinemarkettc.domain.item.Service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,15 +15,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class ServiceRepository implements Repository<Service> {
+public class NonPerishableProductRepositoryImpl implements NonPerishableProductRepository {
 
-    private static final Logger log = LogManager.getLogger(ServiceRepository.class);
+    private static final Logger log = LogManager.getLogger(NonPerishableProductRepositoryImpl.class);
     private static final Pool connectionPool = Pool.getInstance(4);
 
     @Override
-    public Optional<Service> findById(Long id) {
-        String sqlSelect = "SELECT * FROM services WHERE id=?";
-        Optional<Service> serviceOptional = Optional.empty();
+    public Optional<NonPerishebleProduct> findById(Long id) {
+        String sqlSelect = "SELECT * FROM non_perishable_products WHERE id=?";
+        Optional<NonPerishebleProduct> nonPerishableProductOptional = Optional.empty();
         Connection conn = null;
         try {
             conn = connectionPool.getConnection(10, TimeUnit.SECONDS);
@@ -30,7 +31,7 @@ public class ServiceRepository implements Repository<Service> {
                 statement.setLong(1, id);
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
-                    return Optional.of(mapResultSetToService(resultSet));
+                    return Optional.of(mapResultSetToNonPerishableProduct(resultSet));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -40,13 +41,12 @@ public class ServiceRepository implements Repository<Service> {
         } finally {
             connectionPool.releaseConnection(conn);
         }
-        return serviceOptional;
+        return nonPerishableProductOptional;
     }
 
-
-    public Optional<Service> findByName(String name) {
-        String sqlSelect = "SELECT * FROM services WHERE name=?";
-        Optional<Service> serviceOptional = Optional.empty();
+    public Optional<NonPerishebleProduct> findByName(String name) {
+        String sqlSelect = "SELECT * FROM non_perishable_products WHERE name=?";
+        Optional<NonPerishebleProduct> nonPerishableProductOptional = Optional.empty();
         Connection conn = null;
         try {
             conn = connectionPool.getConnection(10, TimeUnit.SECONDS);
@@ -54,7 +54,7 @@ public class ServiceRepository implements Repository<Service> {
                 statement.setString(1, name);
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
-                    return Optional.of(mapResultSetToService(resultSet));
+                    return Optional.of(mapResultSetToNonPerishableProduct(resultSet));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -64,20 +64,20 @@ public class ServiceRepository implements Repository<Service> {
         } finally {
             connectionPool.releaseConnection(conn);
         }
-        return serviceOptional;
+        return nonPerishableProductOptional;
     }
 
     @Override
-    public List<Service> findAll() {
-        String sqlSelectAll = "SELECT * FROM services";
-        List<Service> serviceList = new ArrayList<>();
+    public List<NonPerishebleProduct> findAll() {
+        String sqlSelectAll = "SELECT * FROM non_perishable_products";
+        List<NonPerishebleProduct> nonPerishableProductList = new ArrayList<>();
         Connection connection = null;
         try {
             connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
             try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlSelectAll)) {
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
-                    serviceList.add(mapResultSetToService(resultSet));
+                    nonPerishableProductList.add(mapResultSetToNonPerishableProduct(resultSet));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -87,18 +87,18 @@ public class ServiceRepository implements Repository<Service> {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return serviceList;
+        return nonPerishableProductList;
     }
 
     @Override
-    public Service save(Service service) {
-        String sqlSave = "INSERT INTO services(name, cost, description, service_provider) VALUES (?, ?, ?, ?)";
+    public NonPerishebleProduct save(NonPerishebleProduct nonPerishableProduct) {
+        String sqlSave = "INSERT INTO non_perishable_products(name, cost, description) VALUES (?, ?, ?)";
 
-        if (service.getName() != null) {
-            Optional<Service> existingService = findByName(service.getName());
-            if (existingService.isPresent()) {
-                log.info("id {} already exists", existingService.get().getId());
-                return existingService.get();
+        if (nonPerishableProduct.getName() != null) {
+            Optional<NonPerishebleProduct> existingProduct = findByName(nonPerishableProduct.getName());
+            if (existingProduct.isPresent()) {
+                log.info("id {} already exists", existingProduct.get().getId());
+                return existingProduct.get();
             }
         }
 
@@ -106,10 +106,9 @@ public class ServiceRepository implements Repository<Service> {
         try {
             connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
             try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlSave, PreparedStatement.RETURN_GENERATED_KEYS)) {
-                statement.setString(1, service.getName());
-                statement.setDouble(2, service.getCost());
-                statement.setString(3, service.getDescription());
-                statement.setString(4, service.getServiceProvider());
+                statement.setString(1, nonPerishableProduct.getName());
+                statement.setDouble(2, nonPerishableProduct.getCost());
+                statement.setString(3, nonPerishableProduct.getDescription());
 
                 int affectedRows = statement.executeUpdate();
 
@@ -117,7 +116,7 @@ public class ServiceRepository implements Repository<Service> {
                     try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                         if (generatedKeys.next()) {
                             Long generatedId = generatedKeys.getLong(1);
-                            service.setId(generatedId);
+                            nonPerishableProduct.setId(generatedId);
                             log.info("inserted id {}", generatedId);
                         }
                     }
@@ -130,12 +129,12 @@ public class ServiceRepository implements Repository<Service> {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return service;
+        return nonPerishableProduct;
     }
 
     @Override
     public void deleteById(Long id) {
-        String sqlDelete = "DELETE FROM services WHERE id=?";
+        String sqlDelete = "DELETE FROM non_perishable_products WHERE id=?";
         Connection connection = null;
 
         try {
@@ -144,9 +143,9 @@ public class ServiceRepository implements Repository<Service> {
                 statement.setLong(1, id);
                 int affectedRows = statement.executeUpdate();
                 if (affectedRows > 0) {
-                    log.info("deleted id {}", id);
+                    log.info("deleted  id {}", id);
                 } else {
-                    log.warn("none found id {}", id);
+                    log.warn("not found id {}", id);
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -159,24 +158,23 @@ public class ServiceRepository implements Repository<Service> {
     }
 
     @Override
-    public Service update(Service service) {
-        String sqlUpdate = "UPDATE services SET name = ?, cost = ?, description = ?, service_provider = ? WHERE id = ?";
+    public NonPerishebleProduct update(NonPerishebleProduct nonPerishableProduct) {
+        String sqlUpdate = "UPDATE non_perishable_products SET name = ?, cost = ?, description = ? WHERE id = ?";
         Connection connection = null;
 
         try {
             connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
             try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlUpdate)) {
-                statement.setString(1, service.getName());
-                statement.setDouble(2, service.getCost());
-                statement.setString(3, service.getDescription());
-                statement.setString(4, service.getServiceProvider());
-                statement.setLong(5, service.getId());
+                statement.setString(1, nonPerishableProduct.getName());
+                statement.setDouble(2, nonPerishableProduct.getCost());
+                statement.setString(3, nonPerishableProduct.getDescription());
+                statement.setLong(4, nonPerishableProduct.getId());
 
                 int affectedRows = statement.executeUpdate();
                 if (affectedRows > 0) {
-                    log.info("updated id {}", service.getId());
+                    log.info("updated  id {}", nonPerishableProduct.getId());
                 } else {
-                    log.warn("not found id {}", service.getId());
+                    log.warn("not found id {}", nonPerishableProduct.getId());
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -186,16 +184,15 @@ public class ServiceRepository implements Repository<Service> {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return service;
+        return nonPerishableProduct;
     }
 
-    private Service mapResultSetToService(ResultSet resultSet) throws SQLException {
-        Service service = new Service();
-        service.setId(resultSet.getLong("id"));
-        service.setName(resultSet.getString("name"));
-        service.setCost(resultSet.getDouble("cost"));
-        service.setDescription(resultSet.getString("description"));
-        service.setServiceProvider(resultSet.getString("service_provider"));
-        return service;
+    private NonPerishebleProduct mapResultSetToNonPerishableProduct(ResultSet resultSet) throws SQLException {
+        NonPerishebleProduct nonPerishableProduct = new NonPerishebleProduct();
+        nonPerishableProduct.setId(resultSet.getLong("id"));
+        nonPerishableProduct.setName(resultSet.getString("name"));
+        nonPerishableProduct.setCost(resultSet.getDouble("cost"));
+        nonPerishableProduct.setDescription(resultSet.getString("description"));
+        return nonPerishableProduct;
     }
 }

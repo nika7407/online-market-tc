@@ -1,8 +1,9 @@
-package com.solvd.onlinemarkettc.persistence.repository;
+package com.solvd.onlinemarkettc.persistence.impl;
 
+import com.solvd.onlinemarkettc.domain.item.FoodProduct;
+import com.solvd.onlinemarkettc.persistence.FoodProductRepository;
 import com.solvd.onlinemarkettc.persistence.connection.Connection;
 import com.solvd.onlinemarkettc.persistence.connection.Pool;
-import com.solvd.onlinemarkettc.domain.item.DiscountedItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,15 +15,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class DiscountedItemRepository implements Repository<DiscountedItem> {
+public class FoodProductRepositoryImpl implements FoodProductRepository {
 
-    private static final Logger log = LogManager.getLogger(DiscountedItemRepository.class);
+    private static final Logger log = LogManager.getLogger(FoodProductRepositoryImpl.class);
     private static final Pool connectionPool = Pool.getInstance(4);
 
+
     @Override
-    public Optional<DiscountedItem> findById(Long id) {
-        String sqlSelect = "SELECT * FROM discounted_items WHERE id=?";
-        Optional<DiscountedItem> discountedItemOptional = Optional.empty();
+    public Optional<FoodProduct> findById(Long id) {
+        String sqlSelect = "SELECT * FROM food_products WHERE id=?";
+        Optional<FoodProduct> foodProductOptional = Optional.empty();
         Connection conn = null;
         try {
             conn = connectionPool.getConnection(10, TimeUnit.SECONDS);
@@ -30,8 +32,9 @@ public class DiscountedItemRepository implements Repository<DiscountedItem> {
                 statement.setLong(1, id);
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
-                    return Optional.of(mapResultSetToDiscountedItem(resultSet));
+                    return Optional.of(mapResultSetToFoodProduct(resultSet));
                 }
+
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -40,12 +43,13 @@ public class DiscountedItemRepository implements Repository<DiscountedItem> {
         } finally {
             connectionPool.releaseConnection(conn);
         }
-        return discountedItemOptional;
+        return foodProductOptional;
     }
 
-    public Optional<DiscountedItem> findByName(String name) {
-        String sqlSelect = "SELECT * FROM discounted_items WHERE name=?";
-        Optional<DiscountedItem> discountedItemOptional = Optional.empty();
+    @Override
+    public Optional<FoodProduct> findByName(String name) {
+        String sqlSelect = "SELECT * FROM food_products WHERE name=?";
+        Optional<FoodProduct> foodProductOptional = Optional.empty();
         Connection conn = null;
         try {
             conn = connectionPool.getConnection(10, TimeUnit.SECONDS);
@@ -53,8 +57,9 @@ public class DiscountedItemRepository implements Repository<DiscountedItem> {
                 statement.setString(1, name);
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
-                    return Optional.of(mapResultSetToDiscountedItem(resultSet));
+                    return Optional.of(mapResultSetToFoodProduct(resultSet));
                 }
+
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -63,20 +68,20 @@ public class DiscountedItemRepository implements Repository<DiscountedItem> {
         } finally {
             connectionPool.releaseConnection(conn);
         }
-        return discountedItemOptional;
+        return foodProductOptional;
     }
 
     @Override
-    public List<DiscountedItem> findAll() {
-        String sqlSelectAll = "SELECT * FROM discounted_items";
-        List<DiscountedItem> discountedItemList = new ArrayList<>();
+    public List<FoodProduct> findAll() {
+        String sqlSelectAll = "SELECT * FROM food_products";
+        List<FoodProduct> foodProductList = new ArrayList<>();
         Connection connection = null;
         try {
             connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
             try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlSelectAll)) {
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
-                    discountedItemList.add(mapResultSetToDiscountedItem(resultSet));
+                    foodProductList.add(mapResultSetToFoodProduct(resultSet));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -86,38 +91,40 @@ public class DiscountedItemRepository implements Repository<DiscountedItem> {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return discountedItemList;
+        return foodProductList;
     }
 
     @Override
-    public DiscountedItem save(DiscountedItem discountedItem) {
-        String sqlSave = "INSERT INTO discounted_items(name, cost, description) VALUES (?, ?, ?)";
+    public FoodProduct save(FoodProduct foodProduct) {
+        String sqlSaveFood = "INSERT INTO food_products(name, cost, expiration_date) VALUES (?, ?, ?)";
 
-        if (discountedItem.getName() != null) {
-            Optional<DiscountedItem> existingItem = findByName(discountedItem.getName());
-            if (existingItem.isPresent()) {
-                log.info("{} id already exists", existingItem.get().getId());
-                return existingItem.get();
+        if (foodProduct.getName() != null) {
+            Optional<FoodProduct> existingProduct = findByName(foodProduct.getName());
+            if (existingProduct.isPresent()) {
+                log.info("product id {} already exists", existingProduct.get().getId());
+                return existingProduct.get();
             }
         }
 
         Connection connection = null;
         try {
             connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
-            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlSave, PreparedStatement.RETURN_GENERATED_KEYS)) {
-                statement.setString(1, discountedItem.getName());
-                statement.setDouble(2, discountedItem.getCost());
-                statement.setString(3, discountedItem.getDescription());
+            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlSaveFood, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                statement.setString(1, foodProduct.getName());
+                statement.setDouble(2, foodProduct.getCost());
+                statement.setDate(3, new java.sql.Date(foodProduct.getExpirationDate().getTime()));
 
                 int affectedRows = statement.executeUpdate();
-                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        Long generatedId = generatedKeys.getLong(1);
-                        discountedItem.setId(generatedId);
-                        log.info("inserted id {}", generatedId);
+
+                if (affectedRows > 0) {
+                    try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            Long generatedId = generatedKeys.getLong(1);
+                            foodProduct.setId(generatedId);
+                            log.info("inserted food id {}", generatedId);
+                        }
                     }
                 }
-
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -126,12 +133,12 @@ public class DiscountedItemRepository implements Repository<DiscountedItem> {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return discountedItem;
+        return foodProduct;
     }
 
     @Override
     public void deleteById(Long id) {
-        String sqlDelete = "DELETE FROM discounted_items WHERE id=?";
+        String sqlDelete = "DELETE FROM food_products WHERE id=?";
         Connection connection = null;
 
         try {
@@ -140,9 +147,9 @@ public class DiscountedItemRepository implements Repository<DiscountedItem> {
                 statement.setLong(1, id);
                 int affectedRows = statement.executeUpdate();
                 if (affectedRows > 0) {
-                    log.info("deleted  id {}", id);
+                    log.info("deleted food product with id {}", id);
                 } else {
-                    log.warn("no  found  id {}", id);
+                    log.warn("no food product found with id {}", id);
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -155,23 +162,23 @@ public class DiscountedItemRepository implements Repository<DiscountedItem> {
     }
 
     @Override
-    public DiscountedItem update(DiscountedItem discountedItem) {
-        String sqlUpdate = "UPDATE discounted_items SET name = ?, cost = ?, description = ? WHERE id = ?";
+    public FoodProduct update(FoodProduct foodProduct) {
+        String sqlUpdate = "UPDATE food_products SET name = ?, cost = ?, expiration_date = ? WHERE id = ?";
         Connection connection = null;
 
         try {
             connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
             try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlUpdate)) {
-                statement.setString(1, discountedItem.getName());
-                statement.setDouble(2, discountedItem.getCost());
-                statement.setString(3, discountedItem.getDescription());
-                statement.setLong(4, discountedItem.getId());
+                statement.setString(1, foodProduct.getName());
+                statement.setDouble(2, foodProduct.getCost());
+                statement.setDate(3, new java.sql.Date(foodProduct.getExpirationDate().getTime()));
+                statement.setLong(4, foodProduct.getId());
 
                 int affectedRows = statement.executeUpdate();
                 if (affectedRows > 0) {
-                    log.info("updated  id {}", discountedItem.getId());
+                    log.info("updated id {}", foodProduct.getId());
                 } else {
-                    log.warn("not present id {}", discountedItem.getId());
+                    log.warn("not found id {}", foodProduct.getId());
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -181,15 +188,16 @@ public class DiscountedItemRepository implements Repository<DiscountedItem> {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return discountedItem;
+        return foodProduct;
     }
 
-    private DiscountedItem mapResultSetToDiscountedItem(ResultSet resultSet) throws SQLException {
-        DiscountedItem discountedItem = new DiscountedItem();
-        discountedItem.setId(resultSet.getLong("id"));
-        discountedItem.setName(resultSet.getString("name"));
-        discountedItem.setCost(resultSet.getDouble("cost"));
-        discountedItem.setDescription(resultSet.getString("description"));
-        return discountedItem;
+    private FoodProduct mapResultSetToFoodProduct(ResultSet resultSet) throws SQLException {
+        FoodProduct foodProduct = new FoodProduct();
+
+        foodProduct.setId(resultSet.getLong("id"));
+        foodProduct.setName(resultSet.getString("name"));
+        foodProduct.setCost(resultSet.getDouble("cost"));
+        foodProduct.setExpirationDate(resultSet.getTimestamp("expiration_date"));
+        return foodProduct;
     }
 }

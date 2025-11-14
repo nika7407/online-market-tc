@@ -1,8 +1,9 @@
-package com.solvd.onlinemarkettc.persistence.repository;
+package com.solvd.onlinemarkettc.persistence.impl;
 
+import com.solvd.onlinemarkettc.domain.item.DiscountedItem;
+import com.solvd.onlinemarkettc.persistence.DiscountedItemRepository;
 import com.solvd.onlinemarkettc.persistence.connection.Connection;
 import com.solvd.onlinemarkettc.persistence.connection.Pool;
-import com.solvd.onlinemarkettc.domain.user.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,15 +15,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-public class UserRepository implements Repository<User> {
+public class DiscountedItemRepositoryImpl implements DiscountedItemRepository {
 
-    private static final Logger log = LogManager.getLogger(UserRepository.class);
+    private static final Logger log = LogManager.getLogger(DiscountedItemRepositoryImpl.class);
     private static final Pool connectionPool = Pool.getInstance(4);
 
     @Override
-    public Optional<User> findById(Long id) {
-        String sqlSelect = "SELECT * FROM users WHERE id=?";
-        Optional<User> userOptional = Optional.empty();
+    public Optional<DiscountedItem> findById(Long id) {
+        String sqlSelect = "SELECT * FROM discounted_items WHERE id=?";
+        Optional<DiscountedItem> discountedItemOptional = Optional.empty();
         Connection conn = null;
         try {
             conn = connectionPool.getConnection(10, TimeUnit.SECONDS);
@@ -30,7 +31,7 @@ public class UserRepository implements Repository<User> {
                 statement.setLong(1, id);
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
-                    return Optional.of(mapResultSetToUser(resultSet));
+                    return Optional.of(mapResultSetToDiscountedItem(resultSet));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -40,12 +41,12 @@ public class UserRepository implements Repository<User> {
         } finally {
             connectionPool.releaseConnection(conn);
         }
-        return userOptional;
+        return discountedItemOptional;
     }
 
-    public Optional<User> findByName(String name) {
-        String sqlSelect = "SELECT * FROM users WHERE name=?";
-        Optional<User> userOptional = Optional.empty();
+    public Optional<DiscountedItem> findByName(String name) {
+        String sqlSelect = "SELECT * FROM discounted_items WHERE name=?";
+        Optional<DiscountedItem> discountedItemOptional = Optional.empty();
         Connection conn = null;
         try {
             conn = connectionPool.getConnection(10, TimeUnit.SECONDS);
@@ -53,7 +54,7 @@ public class UserRepository implements Repository<User> {
                 statement.setString(1, name);
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
-                    return Optional.of(mapResultSetToUser(resultSet));
+                    return Optional.of(mapResultSetToDiscountedItem(resultSet));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -63,20 +64,20 @@ public class UserRepository implements Repository<User> {
         } finally {
             connectionPool.releaseConnection(conn);
         }
-        return userOptional;
+        return discountedItemOptional;
     }
 
     @Override
-    public List<User> findAll() {
-        String sqlSelectAll = "SELECT * FROM users";
-        List<User> userList = new ArrayList<>();
+    public List<DiscountedItem> findAll() {
+        String sqlSelectAll = "SELECT * FROM discounted_items";
+        List<DiscountedItem> discountedItemList = new ArrayList<>();
         Connection connection = null;
         try {
             connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
             try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlSelectAll)) {
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
-                    userList.add(mapResultSetToUser(resultSet));
+                    discountedItemList.add(mapResultSetToDiscountedItem(resultSet));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -86,26 +87,38 @@ public class UserRepository implements Repository<User> {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return userList;
+        return discountedItemList;
     }
 
-
     @Override
-    public User save(User user) {
-        String sqlSave = "INSERT INTO users(name, card_number, basket_id) VALUES (?, ?, ?) RETURNING id";
+    public DiscountedItem save(DiscountedItem discountedItem) {
+        String sqlSave = "INSERT INTO discounted_items(name, cost, description) VALUES (?, ?, ?)";
+
+        if (discountedItem.getName() != null) {
+            Optional<DiscountedItem> existingItem = findByName(discountedItem.getName());
+            if (existingItem.isPresent()) {
+                log.info("{} id already exists", existingItem.get().getId());
+                return existingItem.get();
+            }
+        }
 
         Connection connection = null;
         try {
             connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
-            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlSave)) {
-                statement.setString(1, user.getName());
-                statement.setLong(2, user.getDebitCard().getCardNumber());
-                statement.setLong(3, user.getBasket().getId());
+            try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlSave, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                statement.setString(1, discountedItem.getName());
+                statement.setDouble(2, discountedItem.getCost());
+                statement.setString(3, discountedItem.getDescription());
 
-                ResultSet resultSet = statement.executeQuery();
-                if (resultSet.next()) {
-                    user.setId(resultSet.getLong("id"));
+                int affectedRows = statement.executeUpdate();
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        Long generatedId = generatedKeys.getLong(1);
+                        discountedItem.setId(generatedId);
+                        log.info("inserted id {}", generatedId);
+                    }
                 }
+
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -114,12 +127,12 @@ public class UserRepository implements Repository<User> {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return user;
+        return discountedItem;
     }
 
     @Override
     public void deleteById(Long id) {
-        String sqlDelete = "DELETE FROM users WHERE id=?";
+        String sqlDelete = "DELETE FROM discounted_items WHERE id=?";
         Connection connection = null;
 
         try {
@@ -128,9 +141,9 @@ public class UserRepository implements Repository<User> {
                 statement.setLong(1, id);
                 int affectedRows = statement.executeUpdate();
                 if (affectedRows > 0) {
-                    log.info("deleted user id {}", id);
+                    log.info("deleted  id {}", id);
                 } else {
-                    log.warn("not found user with id {}", id);
+                    log.warn("no  found  id {}", id);
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -143,23 +156,23 @@ public class UserRepository implements Repository<User> {
     }
 
     @Override
-    public User update(User user) {
-        String sqlUpdate = "UPDATE users SET name = ?, card_number = ?, basket_id = ? WHERE id = ?";
+    public DiscountedItem update(DiscountedItem discountedItem) {
+        String sqlUpdate = "UPDATE discounted_items SET name = ?, cost = ?, description = ? WHERE id = ?";
         Connection connection = null;
 
         try {
             connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
             try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlUpdate)) {
-                statement.setString(1, user.getName());
-                statement.setLong(2, user.getDebitCard().getCardNumber());
-                statement.setLong(3, user.getBasket().getId());
-                statement.setLong(4, user.getId());
+                statement.setString(1, discountedItem.getName());
+                statement.setDouble(2, discountedItem.getCost());
+                statement.setString(3, discountedItem.getDescription());
+                statement.setLong(4, discountedItem.getId());
 
                 int affectedRows = statement.executeUpdate();
                 if (affectedRows > 0) {
-                    log.info("updated user id {}", user.getId());
+                    log.info("updated  id {}", discountedItem.getId());
                 } else {
-                    log.warn("not found user with  id {}", user.getId());
+                    log.warn("not present id {}", discountedItem.getId());
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -169,13 +182,15 @@ public class UserRepository implements Repository<User> {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return user;
+        return discountedItem;
     }
 
-    private User mapResultSetToUser(ResultSet resultSet) throws SQLException {
-        User user = new User();
-        user.setId(resultSet.getLong("id"));
-        user.setName(resultSet.getString("name"));
-        return user;
+    private DiscountedItem mapResultSetToDiscountedItem(ResultSet resultSet) throws SQLException {
+        DiscountedItem discountedItem = new DiscountedItem();
+        discountedItem.setId(resultSet.getLong("id"));
+        discountedItem.setName(resultSet.getString("name"));
+        discountedItem.setCost(resultSet.getDouble("cost"));
+        discountedItem.setDescription(resultSet.getString("description"));
+        return discountedItem;
     }
 }
