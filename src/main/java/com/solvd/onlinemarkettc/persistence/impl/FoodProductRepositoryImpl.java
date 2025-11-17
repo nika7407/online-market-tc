@@ -95,14 +95,14 @@ public class FoodProductRepositoryImpl implements FoodProductRepository {
     }
 
     @Override
-    public FoodProduct save(FoodProduct foodProduct) {
+    public Long save(FoodProduct foodProduct) {
         String sqlSaveFood = "INSERT INTO food_products(name, cost, expiration_date) VALUES (?, ?, ?)";
 
         if (foodProduct.getName() != null) {
             Optional<FoodProduct> existingProduct = findByName(foodProduct.getName());
             if (existingProduct.isPresent()) {
                 log.info("product id {} already exists", existingProduct.get().getId());
-                return existingProduct.get();
+                return existingProduct.get().getId();
             }
         }
 
@@ -133,7 +133,7 @@ public class FoodProductRepositoryImpl implements FoodProductRepository {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return foodProduct;
+        return foodProduct.getId();
     }
 
     @Override
@@ -162,7 +162,7 @@ public class FoodProductRepositoryImpl implements FoodProductRepository {
     }
 
     @Override
-    public FoodProduct update(FoodProduct foodProduct) {
+    public Long update(FoodProduct foodProduct) {
         String sqlUpdate = "UPDATE food_products SET name = ?, cost = ?, expiration_date = ? WHERE id = ?";
         Connection connection = null;
 
@@ -188,7 +188,7 @@ public class FoodProductRepositoryImpl implements FoodProductRepository {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return foodProduct;
+        return foodProduct.getId();
     }
 
     private FoodProduct mapResultSetToFoodProduct(ResultSet resultSet) throws SQLException {

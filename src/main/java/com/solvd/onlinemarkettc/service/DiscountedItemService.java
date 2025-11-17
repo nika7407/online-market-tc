@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface DiscountedItemService {
 
-    DiscountedItem createDiscountedItem(DiscountedItem item);
+    Long createDiscountedItem(DiscountedItem item);
 
     Optional<DiscountedItem> getDiscountedItemById(Long id);
 
@@ -15,7 +15,7 @@ public interface DiscountedItemService {
 
     List<DiscountedItem> getAllDiscountedItems();
 
-    DiscountedItem updateDiscountedItem(DiscountedItem item);
+    Long updateDiscountedItem(DiscountedItem item);
 
     void deleteDiscountedItem(Long id);
 

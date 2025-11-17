@@ -13,10 +13,10 @@ public interface UserRepository {
 
     List<User> findAll();
 
-    User save(User user);
+    Long save(User user);
 
     void deleteById(Long id);
 
-    User update(User user);
+    Long update(User user);
 
 }

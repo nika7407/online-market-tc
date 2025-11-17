@@ -1,7 +1,7 @@
 package com.solvd.onlinemarkettc.service.impl;
 
 import com.solvd.onlinemarkettc.domain.item.Service;
-import com.solvd.onlinemarkettc.persistence.impl.ServiceRepositoryImpl;
+import com.solvd.onlinemarkettc.persistence.mybatisimpl.ServiceRepositoryMybatisImpl;
 import com.solvd.onlinemarkettc.service.ServiceService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,14 +13,15 @@ import java.util.Optional;
 public class ServiceServiceImpl implements ServiceService {
 
     private static final Logger log = LogManager.getLogger(ServiceServiceImpl.class);
-    private final ServiceRepositoryImpl serviceRepository;
+    // private final ServiceRepositoryImpl serviceRepository;
+    private final ServiceRepositoryMybatisImpl serviceRepository;
 
     public ServiceServiceImpl() {
-        this.serviceRepository = new ServiceRepositoryImpl();
+        this.serviceRepository = new ServiceRepositoryMybatisImpl();
     }
 
     @Override
-    public Service createService(Service service) {
+    public Long createService(Service service) {
         log.info("create service: {}", service.getName());
         return serviceRepository.save(service);
     }
@@ -44,7 +45,7 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public Service updateService(Service service) {
+    public Long updateService(Service service) {
         log.info("update service id: {}", service.getId());
         return serviceRepository.update(service);
     }

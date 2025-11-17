@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.onlinemarkettc.persistence.BasketRepository">
+
+    <select id="findById" parameterType="Long" resultMap="BasketResultMap">
+        SELECT *
+        FROM baskets
+        WHERE id = #{id}
+    </select>
+
+    <select id="findAll" resultMap="BasketResultMap">
+        SELECT *
+        FROM baskets
+    </select>
+
+    <insert id="save" parameterType="com.solvd.onlinemarkettc.domain.finantialoperation.Basket"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO baskets (sum_cost, date, delivery_address_id)
+        VALUES (#{sumCost}, #{date}, #{address.id})
+    </insert>
+
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM baskets
+        WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.solvd.onlinemarkettc.domain.finantialoperation.Basket">
+        UPDATE baskets
+        SET sum_cost = #{sumCost},
+        date = #{date}, delivery_address_id = #{address.id}
+        WHERE id = #{id}
+    </update>
+
+    <select id="findBasketWithAllItems" parameterType="Long" resultMap="BasketWithAllItemsResultMap">
+        SELECT
+        b.id as basket_id, b.sum_cost as basket_sum_cost, b.date as basket_date, b.delivery_address_id as
+        basket_delivery_address_id, da.delivery_address as delivery_address,
+        fp.id as food_product_id, fp.name as food_product_name, fp.cost as food_product_cost,
+        fp.expiration_date as food_product_expiration_date,
+        npp.id as non_perishable_product_id, npp.name as non_perishable_product_name, npp.cost as
+        non_perishable_product_cost, npp.description as non_perishable_product_description,
+        di.id as discounted_item_id, di.name as discounted_item_name, di.cost as discounted_item_cost, di.description as
+        discounted_item_description,
+        s.id as service_id, s.name as service_name, s.cost as service_cost, s.description as service_description,
+        s.service_provider as service_provider
+        FROM baskets b
+        LEFT JOIN delivery_addresses da ON b.delivery_address_id = da.id
+        LEFT JOIN basket_food_products bfp ON b.id = bfp.basket_id
+        LEFT JOIN food_products fp ON bfp.food_product_id = fp.id
+        LEFT JOIN basket_non_perishable_products bnpp ON b.id = bnpp.basket_id
+        LEFT JOIN non_perishable_products npp ON bnpp.non_perishable_product_id = npp.id
+        LEFT JOIN basket_discounted_items bdi ON b.id = bdi.basket_id
+        LEFT JOIN discounted_items di ON bdi.discounted_item_id = di.id
+        LEFT JOIN basket_services bs ON b.id = bs.basket_id
+        LEFT JOIN services s ON bs.service_id = s.id
+        WHERE b.id = #{basketId}
+    </select>
+
+    <resultMap id="BasketResultMap" type="com.solvd.onlinemarkettc.domain.finantialoperation.Basket"
+               autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="sumCost" column="sum_cost"/>
+        <result property="date" column="date"/>
+        <association property="address" javaType="com.solvd.onlinemarkettc.domain.delivery.Address">
+            <id property="id" column="delivery_address_id"/>
+            <result property="deliveryAddress" column="delivery_address"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="BasketWithAllItemsResultMap" type="com.solvd.onlinemarkettc.domain.finantialoperation.Basket"
+               extends="BasketResultMap" autoMapping="false">
+        <id property="id" column="basket_id"/>
+        <result property="sumCost" column="basket_sum_cost"/>
+        <result property="date" column="basket_date"/>
+
+        <association property="address" javaType="com.solvd.onlinemarkettc.domain.delivery.Address">
+            <id property="id" column="basket_delivery_address_id"/>
+            <result property="deliveryAddress" column="delivery_address"/>
+        </association>
+
+        <collection property="foodProductList" ofType="com.solvd.onlinemarkettc.domain.item.FoodProduct">
+            <id property="id" column="food_product_id"/>
+            <result property="name" column="food_product_name"/>
+            <result property="cost" column="food_product_cost"/>
+            <result property="expirationDate" column="food_product_expiration_date"/>
+        </collection>
+
+        <collection property="nonPerishebleProductList"
+                    ofType="com.solvd.onlinemarkettc.domain.item.NonPerishebleProduct">
+            <id property="id" column="non_perishable_product_id"/>
+            <result property="name" column="non_perishable_product_name"/>
+            <result property="cost" column="non_perishable_product_cost"/>
+            <result property="description" column="non_perishable_product_description"/>
+        </collection>
+
+        <collection property="discountedItemList" ofType="com.solvd.onlinemarkettc.domain.item.DiscountedItem">
+            <id property="id" column="discounted_item_id"/>
+            <result property="name" column="discounted_item_name"/>
+            <result property="cost" column="discounted_item_cost"/>
+            <result property="description" column="discounted_item_description"/>
+        </collection>
+
+        <collection property="serviceList" ofType="com.solvd.onlinemarkettc.domain.item.Service">
+            <id property="id" column="service_id"/>
+            <result property="name" column="service_name"/>
+            <result property="cost" column="service_cost"/>
+            <result property="description" column="service_description"/>
+            <result property="serviceProvider" column="service_provider"/>
+        </collection>
+    </resultMap>
+
+    <!-- mtm thigs -->
+    <insert id="addFoodProductToBasket">
+        INSERT INTO basket_food_products (basket_id, food_product_id)
+        VALUES (#{basketId}, #{foodProductId})
+    </insert>
+
+    <insert id="addNonPerishableProductToBasket">
+        INSERT INTO basket_non_perishable_products (basket_id, non_perishable_product_id)
+        VALUES (#{basketId}, #{nonPerishableProductId})
+    </insert>
+
+    <insert id="addDiscountedItemToBasket">
+        INSERT INTO basket_discounted_items (basket_id, discounted_item_id)
+        VALUES (#{basketId}, #{discountedItemId})
+    </insert>
+
+    <insert id="addServiceToBasket">
+        INSERT INTO basket_services (basket_id, service_id)
+        VALUES (#{basketId}, #{serviceId})
+    </insert>
+
+    <select id="findFoodProductIdsByBasketId" parameterType="Long" resultType="Long">
+        SELECT food_product_id
+        FROM basket_food_products
+        WHERE basket_id = #{basketId}
+    </select>
+
+    <select id="findNonPerishableProductIdsByBasketId" parameterType="Long" resultType="Long">
+        SELECT non_perishable_product_id
+        FROM basket_non_perishable_products
+        WHERE basket_id = #{basketId}
+    </select>
+
+    <select id="findDiscountedItemIdsByBasketId" parameterType="Long" resultType="Long">
+        SELECT discounted_item_id
+        FROM basket_discounted_items
+        WHERE basket_id = #{basketId}
+    </select>
+
+    <select id="findServiceIdsByBasketId" parameterType="Long" resultType="Long">
+        SELECT service_id
+        FROM basket_services
+        WHERE basket_id = #{basketId}
+    </select>
+
+</mapper>

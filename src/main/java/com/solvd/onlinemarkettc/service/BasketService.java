@@ -13,7 +13,7 @@ public interface BasketService {
 
     List<Basket> getAllBaskets();
 
-    Basket updateBasket(Basket basket);
+    Long updateBasket(Basket basket);
 
     void deleteBasket(Long id);
 

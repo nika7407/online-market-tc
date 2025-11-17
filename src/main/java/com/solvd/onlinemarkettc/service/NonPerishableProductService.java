@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface NonPerishableProductService {
 
-    NonPerishebleProduct createNonPerishableProduct(NonPerishebleProduct product);
+    Long createNonPerishableProduct(NonPerishebleProduct product);
 
     Optional<NonPerishebleProduct> getNonPerishableProductById(Long id);
 
@@ -15,7 +15,7 @@ public interface NonPerishableProductService {
 
     List<NonPerishebleProduct> getAllNonPerishableProducts();
 
-    NonPerishebleProduct updateNonPerishableProduct(NonPerishebleProduct product);
+    Long updateNonPerishableProduct(NonPerishebleProduct product);
 
     void deleteNonPerishableProduct(Long id);
 

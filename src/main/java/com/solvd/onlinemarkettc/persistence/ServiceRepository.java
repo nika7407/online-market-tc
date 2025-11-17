@@ -13,10 +13,10 @@ public interface ServiceRepository {
 
     List<Service> findAll();
 
-    Service save(Service service);
+    Long save(Service service);
 
     void deleteById(Long id);
 
-    Service update(Service service);
+    Long update(Service service);
 
 }

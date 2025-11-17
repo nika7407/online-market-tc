@@ -5,12 +5,12 @@ import com.solvd.onlinemarkettc.domain.item.DiscountedItem;
 import com.solvd.onlinemarkettc.domain.item.FoodProduct;
 import com.solvd.onlinemarkettc.domain.item.NonPerishebleProduct;
 import com.solvd.onlinemarkettc.domain.item.Service;
-import com.solvd.onlinemarkettc.persistence.impl.BasketRepositoryImpl;
-import com.solvd.onlinemarkettc.persistence.impl.DiscountedItemRepositoryImpl;
-import com.solvd.onlinemarkettc.persistence.impl.FoodProductRepositoryImpl;
-import com.solvd.onlinemarkettc.persistence.impl.NonPerishableProductRepositoryImpl;
-import com.solvd.onlinemarkettc.persistence.impl.ServiceRepositoryImpl;
+import com.solvd.onlinemarkettc.persistence.mybatisimpl.BasketRepositoryMybatisImpl;
 import com.solvd.onlinemarkettc.service.BasketService;
+import com.solvd.onlinemarkettc.service.DiscountedItemService;
+import com.solvd.onlinemarkettc.service.FoodProductService;
+import com.solvd.onlinemarkettc.service.NonPerishableProductService;
+import com.solvd.onlinemarkettc.service.ServiceService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,45 +20,45 @@ import java.util.Optional;
 public class BasketServiceImpl implements BasketService {
 
     private static final Logger log = LogManager.getLogger(BasketServiceImpl.class);
-    private final BasketRepositoryImpl basketRepository;
-    private final FoodProductRepositoryImpl foodProductRepository;
-    private final NonPerishableProductRepositoryImpl nonPerishableProductRepository;
-    private final DiscountedItemRepositoryImpl discountedItemRepository;
-    private final ServiceRepositoryImpl serviceRepository;
+    // private final BasketRepositoryImpl basketRepository;
+    private final BasketRepositoryMybatisImpl basketRepository;
+    private final FoodProductService foodProductService;
+    private final NonPerishableProductService nonPerishableProductService;
+    private final DiscountedItemService discountedItemService;
+    private final ServiceService serviceService;
 
     public BasketServiceImpl() {
-        this.basketRepository = new BasketRepositoryImpl();
-        this.foodProductRepository = new FoodProductRepositoryImpl();
-        this.nonPerishableProductRepository = new NonPerishableProductRepositoryImpl();
-        this.discountedItemRepository = new DiscountedItemRepositoryImpl();
-        this.serviceRepository = new ServiceRepositoryImpl();
+        this.basketRepository = new BasketRepositoryMybatisImpl();
+        this.foodProductService = new FoodProductServiceImpl();
+        this.nonPerishableProductService = new NonPerishableProductServiceImpl();
+        this.discountedItemService = new DiscountedItemServiceImpl();
+        this.serviceService = new ServiceServiceImpl();
     }
 
     @Override
     public Basket createBasketWithItems(Basket basket) {
         log.info("create basket with items");
-
-        Basket savedBasket = basketRepository.save(basket);
-        Long basketId = savedBasket.getId();
+        basketRepository.save(basket);
+        Long savedBasket = basket.getId();
 
         for (FoodProduct food : basket.getFoodProductList()) {
-            basketRepository.addFoodProductToBasket(basketId, food.getId());
+            basketRepository.addFoodProductToBasket(savedBasket, food.getId());
         }
 
         for (NonPerishebleProduct product : basket.getNonPerishebleProductList()) {
-            basketRepository.addNonPerishableProductToBasket(basketId, product.getId());
+            basketRepository.addNonPerishableProductToBasket(savedBasket, product.getId());
         }
 
         for (DiscountedItem item : basket.getDiscountedItemList()) {
-            basketRepository.addDiscountedItemToBasket(basketId, item.getId());
+            basketRepository.addDiscountedItemToBasket(savedBasket, item.getId());
         }
 
         for (Service service : basket.getServiceList()) {
-            basketRepository.addServiceToBasket(basketId, service.getId());
+            basketRepository.addServiceToBasket(savedBasket, service.getId());
         }
 
         log.info("basket created successfully");
-        return getBasketWithAllItems(basketId);
+        return getBasketWithAllItems(savedBasket);
     }
 
     @Override
@@ -75,40 +75,37 @@ public class BasketServiceImpl implements BasketService {
 
         List<Long> foodProductIds = basketRepository.findFoodProductIdsByBasketId(basketId);
         for (Long foodId : foodProductIds) {
-            foodProductRepository.findById(foodId).ifPresent(basket::addFoodProduct);
+            foodProductService.getFoodProductById(foodId).ifPresent(basket::addFoodProduct);
         }
 
         List<Long> nonPerishableProductIds = basketRepository.findNonPerishableProductIdsByBasketId(basketId);
         for (Long productId : nonPerishableProductIds) {
-            nonPerishableProductRepository.findById(productId).ifPresent(basket::addProduct);
+            nonPerishableProductService.getNonPerishableProductById(productId).ifPresent(basket::addProduct);
         }
 
         List<Long> discountedItemIds = basketRepository.findDiscountedItemIdsByBasketId(basketId);
         for (Long itemId : discountedItemIds) {
-            discountedItemRepository.findById(itemId).ifPresent(basket::addDiscountedItem);
+            discountedItemService.getDiscountedItemById(itemId).ifPresent(basket::addDiscountedItem);
         }
 
         List<Long> serviceIds = basketRepository.findServiceIdsByBasketId(basketId);
         for (Long serviceId : serviceIds) {
-            serviceRepository.findById(serviceId).ifPresent(basket::addService);
+            serviceService.getServiceById(serviceId).ifPresent(basket::addService);
         }
 
         return basket;
     }
 
-    @Override
     public List<Basket> getAllBaskets() {
         log.debug("get all baskets");
         return basketRepository.findAll();
     }
 
-    @Override
-    public Basket updateBasket(Basket basket) {
+    public Long updateBasket(Basket basket) {
         log.info("update basket");
         return basketRepository.update(basket);
     }
 
-    @Override
     public void deleteBasket(Long id) {
         log.info("delete basket");
         basketRepository.deleteById(id);
@@ -137,5 +134,26 @@ public class BasketServiceImpl implements BasketService {
     public void addServiceToBasket(Long basketId, Long serviceId) {
         log.info("add service");
         basketRepository.addServiceToBasket(basketId, serviceId);
+    }
+
+    public Long save(Basket basket) {
+        log.info("save basket");
+        return basketRepository.save(basket);
+    }
+
+    public List<Long> findFoodProductIdsByBasketId(Long basketId) {
+        return basketRepository.findFoodProductIdsByBasketId(basketId);
+    }
+
+    public List<Long> findNonPerishableProductIdsByBasketId(Long basketId) {
+        return basketRepository.findNonPerishableProductIdsByBasketId(basketId);
+    }
+
+    public List<Long> findDiscountedItemIdsByBasketId(Long basketId) {
+        return basketRepository.findDiscountedItemIdsByBasketId(basketId);
+    }
+
+    public List<Long> findServiceIdsByBasketId(Long basketId) {
+        return basketRepository.findServiceIdsByBasketId(basketId);
     }
 }

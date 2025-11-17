@@ -1,5 +1,6 @@
 package com.solvd.onlinemarkettc.persistence.impl;
 
+import com.solvd.onlinemarkettc.domain.finantialoperation.Basket;
 import com.solvd.onlinemarkettc.domain.item.DiscountedItem;
 import com.solvd.onlinemarkettc.domain.item.FoodProduct;
 import com.solvd.onlinemarkettc.domain.item.NonPerishebleProduct;
@@ -7,7 +8,6 @@ import com.solvd.onlinemarkettc.domain.item.Service;
 import com.solvd.onlinemarkettc.persistence.BasketRepository;
 import com.solvd.onlinemarkettc.persistence.connection.Connection;
 import com.solvd.onlinemarkettc.persistence.connection.Pool;
-import com.solvd.onlinemarkettc.domain.finantialoperation.Basket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -73,10 +73,10 @@ public class BasketRepositoryImpl implements BasketRepository {
     }
 
     @Override
-    public Basket save(Basket basket) {
+    public Long save(Basket basket) {
         String sqlSave = "INSERT INTO baskets(sum_cost, date, delivery_address_id) VALUES (?, ?, ?)";
         Connection connection = null;
-
+        Long generatedId = null;
         try {
             connection = connectionPool.getConnection(1, TimeUnit.SECONDS);
             try (PreparedStatement statement = connection.getSqlConnection().prepareStatement(sqlSave, PreparedStatement.RETURN_GENERATED_KEYS)) {
@@ -88,7 +88,7 @@ public class BasketRepositoryImpl implements BasketRepository {
                 if (affectedRows > 0) {
                     try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                         if (generatedKeys.next()) {
-                            Long generatedId = generatedKeys.getLong(1);
+                            generatedId = generatedKeys.getLong(1);
                             basket.setId(generatedId);
                             log.info("inserted basket id {}", generatedId);
                         }
@@ -102,7 +102,7 @@ public class BasketRepositoryImpl implements BasketRepository {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return basket;
+        return generatedId;
     }
 
     @Override
@@ -131,7 +131,7 @@ public class BasketRepositoryImpl implements BasketRepository {
     }
 
     @Override
-    public Basket update(Basket basket) {
+    public Long update(Basket basket) {
         String sqlUpdate = "UPDATE baskets SET sum_cost = ?, date = ?, delivery_address_id = ? WHERE id = ?";
         Connection connection = null;
 
@@ -157,7 +157,7 @@ public class BasketRepositoryImpl implements BasketRepository {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return basket;
+        return basket.getId();
     }
 
     public void addFoodProductToBasket(Long basketId, Long foodProductId) {

@@ -11,11 +11,28 @@ public interface BasketRepository {
 
     List<Basket> findAll();
 
-    Basket save(Basket basket);
+    Long save(Basket basket);
 
     void deleteById(Long id);
 
-    Basket update(Basket basket);
+    Long update(Basket basket);
 
     Basket findBasketWithAllItems(Long basketId);
+
+    // i added mtm cos they are nedeed
+    void addFoodProductToBasket(Long basketId, Long foodProductId);
+
+    void addNonPerishableProductToBasket(Long basketId, Long nonPerishableProductId);
+
+    void addDiscountedItemToBasket(Long basketId, Long discountedItemId);
+
+    void addServiceToBasket(Long basketId, Long serviceId);
+
+    List<Long> findFoodProductIdsByBasketId(Long basketId);
+
+    List<Long> findNonPerishableProductIdsByBasketId(Long basketId);
+
+    List<Long> findDiscountedItemIdsByBasketId(Long basketId);
+
+    List<Long> findServiceIdsByBasketId(Long basketId);
 }

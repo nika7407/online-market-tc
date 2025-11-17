@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.onlinemarkettc.persistence.NonPerishableProductRepository">
+
+    <select id="findById" parameterType="Long" resultMap="NonPerishableProductResultMap">
+        SELECT *
+        FROM non_perishable_products
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByName" parameterType="String" resultMap="NonPerishableProductResultMap">
+        SELECT *
+        FROM non_perishable_products
+        WHERE name = #{name}
+    </select>
+
+    <select id="findAll" resultMap="NonPerishableProductResultMap">
+        SELECT *
+        FROM non_perishable_products
+    </select>
+
+    <insert id="save" parameterType="com.solvd.onlinemarkettc.domain.item.NonPerishebleProduct"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO non_perishable_products (name, cost, description)
+        VALUES (#{name}, #{cost}, #{description})
+    </insert>
+
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM non_perishable_products
+        WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.solvd.onlinemarkettc.domain.item.NonPerishebleProduct">
+        UPDATE non_perishable_products
+        SET name = #{name},
+        cost = #{cost},
+        description = #{description}
+        WHERE id = #{id}
+    </update>
+
+    <resultMap id="NonPerishableProductResultMap" type="com.solvd.onlinemarkettc.domain.item.NonPerishebleProduct"
+               autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="cost" column="cost"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+</mapper>

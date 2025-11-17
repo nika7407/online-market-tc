@@ -92,14 +92,14 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     }
 
     @Override
-    public Service save(Service service) {
+    public Long save(Service service) {
         String sqlSave = "INSERT INTO services(name, cost, description, service_provider) VALUES (?, ?, ?, ?)";
 
         if (service.getName() != null) {
             Optional<Service> existingService = findByName(service.getName());
             if (existingService.isPresent()) {
                 log.info("id {} already exists", existingService.get().getId());
-                return existingService.get();
+                return existingService.get().getId();
             }
         }
 
@@ -131,7 +131,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return service;
+        return service.getId();
     }
 
     @Override
@@ -160,7 +160,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     }
 
     @Override
-    public Service update(Service service) {
+    public Long update(Service service) {
         String sqlUpdate = "UPDATE services SET name = ?, cost = ?, description = ?, service_provider = ? WHERE id = ?";
         Connection connection = null;
 
@@ -187,7 +187,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return service;
+        return service.getId();
     }
 
     private Service mapResultSetToService(ResultSet resultSet) throws SQLException {

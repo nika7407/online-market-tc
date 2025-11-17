@@ -91,14 +91,14 @@ public class DiscountedItemRepositoryImpl implements DiscountedItemRepository {
     }
 
     @Override
-    public DiscountedItem save(DiscountedItem discountedItem) {
+    public Long save(DiscountedItem discountedItem) {
         String sqlSave = "INSERT INTO discounted_items(name, cost, description) VALUES (?, ?, ?)";
 
         if (discountedItem.getName() != null) {
             Optional<DiscountedItem> existingItem = findByName(discountedItem.getName());
             if (existingItem.isPresent()) {
                 log.info("{} id already exists", existingItem.get().getId());
-                return existingItem.get();
+                return existingItem.get().getId();
             }
         }
 
@@ -127,7 +127,7 @@ public class DiscountedItemRepositoryImpl implements DiscountedItemRepository {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return discountedItem;
+        return discountedItem.getId();
     }
 
     @Override
@@ -156,7 +156,7 @@ public class DiscountedItemRepositoryImpl implements DiscountedItemRepository {
     }
 
     @Override
-    public DiscountedItem update(DiscountedItem discountedItem) {
+    public Long update(DiscountedItem discountedItem) {
         String sqlUpdate = "UPDATE discounted_items SET name = ?, cost = ?, description = ? WHERE id = ?";
         Connection connection = null;
 
@@ -182,7 +182,7 @@ public class DiscountedItemRepositoryImpl implements DiscountedItemRepository {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return discountedItem;
+        return discountedItem.getId();
     }
 
     private DiscountedItem mapResultSetToDiscountedItem(ResultSet resultSet) throws SQLException {

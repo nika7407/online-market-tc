@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.onlinemarkettc.persistence.UserRepository">
+
+    <select id="findById" parameterType="Long" resultMap="UserResultMap">
+        SELECT *
+        FROM users
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByName" parameterType="String" resultMap="UserResultMap">
+        SELECT *
+        FROM users
+        WHERE name = #{name}
+    </select>
+
+    <select id="findAll" resultMap="UserResultMap">
+        SELECT *
+        FROM users
+    </select>
+
+    <insert id="save" parameterType="com.solvd.onlinemarkettc.domain.user.User"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO users (name, card_number, basket_id)
+        VALUES (#{name}, #{debitCard.cardNumber}, #{basket.id})
+    </insert>
+
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM users
+        WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.solvd.onlinemarkettc.domain.user.User">
+        UPDATE users
+        SET name = #{name},
+        card_number = #{debitCard.cardNumber},
+        basket_id = #{basket.id}
+        WHERE id = #{id}
+    </update>
+
+    <resultMap id="UserResultMap" type="com.solvd.onlinemarkettc.domain.user.User" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <association property="debitCard" javaType="com.solvd.onlinemarkettc.domain.payment.DebitCard">
+            <id property="cardNumber" column="card_number"/>
+        </association>
+        <association property="basket" javaType="com.solvd.onlinemarkettc.domain.finantialoperation.Basket">
+            <id property="id" column="basket_id"/>
+        </association>
+    </resultMap>
+
+</mapper>

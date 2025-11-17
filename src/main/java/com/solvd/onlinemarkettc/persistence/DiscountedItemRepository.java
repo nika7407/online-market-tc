@@ -13,10 +13,10 @@ public interface DiscountedItemRepository {
 
     List<DiscountedItem> findAll();
 
-    DiscountedItem save(DiscountedItem discountedItem);
+    Long save(DiscountedItem discountedItem);
 
     void deleteById(Long id);
 
-    DiscountedItem update(DiscountedItem discountedItem);
+    Long update(DiscountedItem discountedItem);
 
 }

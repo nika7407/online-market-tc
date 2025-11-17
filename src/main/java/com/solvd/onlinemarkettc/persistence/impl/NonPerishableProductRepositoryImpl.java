@@ -91,14 +91,14 @@ public class NonPerishableProductRepositoryImpl implements NonPerishableProductR
     }
 
     @Override
-    public NonPerishebleProduct save(NonPerishebleProduct nonPerishableProduct) {
+    public Long save(NonPerishebleProduct nonPerishableProduct) {
         String sqlSave = "INSERT INTO non_perishable_products(name, cost, description) VALUES (?, ?, ?)";
 
         if (nonPerishableProduct.getName() != null) {
             Optional<NonPerishebleProduct> existingProduct = findByName(nonPerishableProduct.getName());
             if (existingProduct.isPresent()) {
                 log.info("id {} already exists", existingProduct.get().getId());
-                return existingProduct.get();
+                return existingProduct.get().getId();
             }
         }
 
@@ -129,7 +129,7 @@ public class NonPerishableProductRepositoryImpl implements NonPerishableProductR
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return nonPerishableProduct;
+        return nonPerishableProduct.getId();
     }
 
     @Override
@@ -158,7 +158,7 @@ public class NonPerishableProductRepositoryImpl implements NonPerishableProductR
     }
 
     @Override
-    public NonPerishebleProduct update(NonPerishebleProduct nonPerishableProduct) {
+    public Long update(NonPerishebleProduct nonPerishableProduct) {
         String sqlUpdate = "UPDATE non_perishable_products SET name = ?, cost = ?, description = ? WHERE id = ?";
         Connection connection = null;
 
@@ -184,7 +184,7 @@ public class NonPerishableProductRepositoryImpl implements NonPerishableProductR
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return nonPerishableProduct;
+        return nonPerishableProduct.getId();
     }
 
     private NonPerishebleProduct mapResultSetToNonPerishableProduct(ResultSet resultSet) throws SQLException {

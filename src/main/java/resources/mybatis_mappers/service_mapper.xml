@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.onlinemarkettc.persistence.ServiceRepository">
+
+    <select id="findById" parameterType="Long" resultMap="ServiceResultMap">
+        SELECT *
+        FROM services
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByName" parameterType="String" resultMap="ServiceResultMap">
+        SELECT *
+        FROM services
+        WHERE name = #{name}
+    </select>
+
+    <select id="findAll" resultMap="ServiceResultMap">
+        SELECT *
+        FROM services
+    </select>
+
+    <insert id="save" parameterType="com.solvd.onlinemarkettc.domain.item.Service"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO services (name, cost, description, service_provider)
+        VALUES (#{name}, #{cost}, #{description}, #{serviceProvider})
+    </insert>
+
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM services
+        WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.solvd.onlinemarkettc.domain.item.Service">
+        UPDATE services
+        SET name = #{name},
+        cost = #{cost},
+        description = #{description},
+        service_provider = #{serviceProvider}
+        WHERE id = #{id}
+    </update>
+
+    <resultMap id="ServiceResultMap" type="com.solvd.onlinemarkettc.domain.item.Service" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="cost" column="cost"/>
+        <result property="description" column="description"/>
+        <result property="serviceProvider" column="service_provider"/>
+    </resultMap>
+
+</mapper>

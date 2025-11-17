@@ -8,7 +8,7 @@ import java.util.Optional;
 // ik its stupid name
 public interface ServiceService {
 
-    Service createService(Service service);
+    Long createService(Service service);
 
     Optional<Service> getServiceById(Long id);
 
@@ -16,7 +16,7 @@ public interface ServiceService {
 
     List<Service> getAllServices();
 
-    Service updateService(Service service);
+    Long updateService(Service service);
 
     void deleteService(Long id);
 

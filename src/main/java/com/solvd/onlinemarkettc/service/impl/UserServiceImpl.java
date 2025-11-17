@@ -1,7 +1,7 @@
 package com.solvd.onlinemarkettc.service.impl;
 
 import com.solvd.onlinemarkettc.domain.user.User;
-import com.solvd.onlinemarkettc.persistence.impl.UserRepositoryImpl;
+import com.solvd.onlinemarkettc.persistence.mybatisimpl.UserRepositoryMybatisImpl;
 import com.solvd.onlinemarkettc.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,16 +12,18 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private static final Logger log = LogManager.getLogger(UserServiceImpl.class);
-    private final UserRepositoryImpl userRepository;
+    //   private final UserRepositoryImpl userRepository;
+    private final UserRepositoryMybatisImpl userRepository;
 
     public UserServiceImpl() {
-        this.userRepository = new UserRepositoryImpl();
+        this.userRepository = new UserRepositoryMybatisImpl();
     }
 
     @Override
-    public User createUser(User user) {
+    public Long createUser(User user) {
         log.info("create user: {}", user.getName());
-        return userRepository.save(user);
+        userRepository.save(user);
+        return user.getId();
     }
 
     @Override
@@ -43,9 +45,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(User user) {
+    public Long updateUser(User user) {
         log.info("update user id: {}", user.getId());
-        return userRepository.update(user);
+        userRepository.update(user);
+        return user.getId();
     }
 
     @Override

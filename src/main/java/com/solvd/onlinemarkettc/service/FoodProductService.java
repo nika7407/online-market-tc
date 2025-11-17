@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface FoodProductService {
 
-    FoodProduct createFoodProduct(FoodProduct product);
+    Long createFoodProduct(FoodProduct product);
 
     Optional<FoodProduct> getFoodProductById(Long id);
 
@@ -15,7 +15,7 @@ public interface FoodProductService {
 
     List<FoodProduct> getAllFoodProducts();
 
-    FoodProduct updateFoodProduct(FoodProduct product);
+    Long updateFoodProduct(FoodProduct product);
 
     void deleteFoodProduct(Long id);
 

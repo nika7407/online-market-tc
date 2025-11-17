@@ -107,8 +107,9 @@ public class Main {
         log.info("First basket ID: {}", basketId);
 
         //product service
-        FoodProduct foodProduct = foodProductService.getFoodProductById(foodProductService.createFoodProduct(apple).getId())
-                .orElseThrow(() -> new RuntimeException("food by id 1 not found"));
+        Long id5 = foodProductService.createFoodProduct(apple);
+        FoodProduct foodProduct = foodProductService.getFoodProductById(id5)
+                .orElseThrow(() -> new RuntimeException("food by id not found"));
         log.info("food product from db by id name: {}", foodProduct.getName());
 
         FoodProduct foodProduct2 = foodProductService.getFoodProductByName("apple")
@@ -133,21 +134,21 @@ public class Main {
         //NonPerish
         nonPerishableProductService.getAllNonPerishableProducts();
         log.info("found all non perish");
-        nonPerishableProductService.getNonPerishableProductById(nonPerishableProductService.createNonPerishableProduct(soap).getId());
-        nonPerishableProductService.deleteNonPerishableProduct(nonPerishableProductService.createNonPerishableProduct(soap).getId());
+        nonPerishableProductService.getNonPerishableProductById(nonPerishableProductService.createNonPerishableProduct(soap));
+        nonPerishableProductService.deleteNonPerishableProduct(nonPerishableProductService.createNonPerishableProduct(soap));
         NonPerishebleProduct Notsoap = new NonPerishebleProduct("soap", 1.2, "");
 
         nonPerishableProductService.createNonPerishableProduct(Notsoap);
         Notsoap.setName("NotSoap");
-        nonPerishableProductService.updateNonPerishableProduct(nonPerishableProductService.createNonPerishableProduct(Notsoap));
+        Long id4 = nonPerishableProductService.createNonPerishableProduct(Notsoap);
 
         //Service
         Service service = new Service("service", 16.3, "idk", "some guy");
-        var serviceid = serviceService.createService(service).getId();
+        var serviceid = serviceService.createService(service);
         serviceService.getAllServices();
         serviceService.getServiceById(serviceid);
         Service NOTservice = new Service("service", 16.3, "idk", "some guy");
-        var newId = serviceService.createService(NOTservice).getId();
+        var newId = serviceService.createService(NOTservice);
         NOTservice.setName("NotService");
         NOTservice.setId(newId);
         serviceService.updateService(NOTservice);
@@ -184,7 +185,7 @@ public class Main {
         //User
         basket.setId(basket3.getId());
         User user = new User("someUser", debitCard1, basket);
-        Long userId = userService.createUser(user).getId();
+        Long userId = userService.createUser(user);
         User foundUser = userService.getUserById(userId).orElseThrow();
         userService.getAllUsers();
         foundUser.setName("notSomeUser");

@@ -1,7 +1,7 @@
 package com.solvd.onlinemarkettc.service.impl;
 
 import com.solvd.onlinemarkettc.domain.item.NonPerishebleProduct;
-import com.solvd.onlinemarkettc.persistence.impl.NonPerishableProductRepositoryImpl;
+import com.solvd.onlinemarkettc.persistence.mybatisimpl.NonPerishableProductRepositoryMybatisImpl;
 import com.solvd.onlinemarkettc.service.NonPerishableProductService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,14 +12,15 @@ import java.util.Optional;
 public class NonPerishableProductServiceImpl implements NonPerishableProductService {
 
     private static final Logger log = LogManager.getLogger(NonPerishableProductServiceImpl.class);
-    private final NonPerishableProductRepositoryImpl nonPerishableProductRepository;
+    // private final NonPerishableProductRepositoryImpl nonPerishableProductRepository;
+    private final NonPerishableProductRepositoryMybatisImpl nonPerishableProductRepository;
 
     public NonPerishableProductServiceImpl() {
-        this.nonPerishableProductRepository = new NonPerishableProductRepositoryImpl();
+        this.nonPerishableProductRepository = new NonPerishableProductRepositoryMybatisImpl();
     }
 
     @Override
-    public NonPerishebleProduct createNonPerishableProduct(NonPerishebleProduct product) {
+    public Long createNonPerishableProduct(NonPerishebleProduct product) {
         log.info("create product: {}", product.getName());
         return nonPerishableProductRepository.save(product);
     }
@@ -43,7 +44,7 @@ public class NonPerishableProductServiceImpl implements NonPerishableProductServ
     }
 
     @Override
-    public NonPerishebleProduct updateNonPerishableProduct(NonPerishebleProduct product) {
+    public Long updateNonPerishableProduct(NonPerishebleProduct product) {
         log.info("update product id: {}", product.getId());
         return nonPerishableProductRepository.update(product);
     }

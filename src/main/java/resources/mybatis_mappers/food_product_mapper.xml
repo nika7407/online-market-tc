@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.onlinemarkettc.persistence.FoodProductRepository">
+
+    <select id="findById" parameterType="Long" resultMap="FoodProductResultMap">
+        SELECT *
+        FROM food_products
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByName" parameterType="String" resultMap="FoodProductResultMap">
+        SELECT *
+        FROM food_products
+        WHERE name = #{name}
+        LIMIT 1
+    </select>
+
+    <select id="findAll" resultMap="FoodProductResultMap">
+        SELECT *
+        FROM food_products
+    </select>
+
+    <insert id="save" parameterType="com.solvd.onlinemarkettc.domain.item.FoodProduct"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO food_products (name, cost, expiration_date)
+        VALUES (#{name}, #{cost}, #{expirationDate})
+    </insert>
+
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM food_products
+        WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.solvd.onlinemarkettc.domain.item.FoodProduct">
+        UPDATE food_products
+        SET name = #{name},
+        cost = #{cost},
+        expiration_date = #{expirationDate}
+        WHERE id = #{id}
+    </update>
+
+    <resultMap id="FoodProductResultMap" type="com.solvd.onlinemarkettc.domain.item.FoodProduct" autoMapping="false">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="cost" column="cost"/>
+        <result property="expirationDate" column="expiration_date"/>
+    </resultMap>
+
+</mapper>

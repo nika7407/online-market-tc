@@ -13,10 +13,10 @@ public interface NonPerishableProductRepository {
 
     List<NonPerishebleProduct> findAll();
 
-    NonPerishebleProduct save(NonPerishebleProduct nonPerishableProduct);
+    Long save(NonPerishebleProduct nonPerishableProduct);
 
     void deleteById(Long id);
 
-    NonPerishebleProduct update(NonPerishebleProduct nonPerishableProduct);
+    Long update(NonPerishebleProduct nonPerishableProduct);
 
 }

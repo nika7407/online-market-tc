@@ -1,7 +1,7 @@
 package com.solvd.onlinemarkettc.service.impl;
 
 import com.solvd.onlinemarkettc.domain.item.FoodProduct;
-import com.solvd.onlinemarkettc.persistence.impl.FoodProductRepositoryImpl;
+import com.solvd.onlinemarkettc.persistence.mybatisimpl.FoodProductRepositoryMybatisImpl;
 import com.solvd.onlinemarkettc.service.FoodProductService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,16 +12,18 @@ import java.util.Optional;
 public class FoodProductServiceImpl implements FoodProductService {
 
     private static final Logger log = LogManager.getLogger(FoodProductServiceImpl.class);
-    private final FoodProductRepositoryImpl foodProductRepository;
+    //private final FoodProductRepositoryImpl foodProductRepository;
+    private final FoodProductRepositoryMybatisImpl foodProductRepository;
 
     public FoodProductServiceImpl() {
-        this.foodProductRepository = new FoodProductRepositoryImpl();
+        this.foodProductRepository = new FoodProductRepositoryMybatisImpl();
     }
 
     @Override
-    public FoodProduct createFoodProduct(FoodProduct product) {
+    public Long createFoodProduct(FoodProduct product) {
         log.info("create product: {}", product.getName());
-        return foodProductRepository.save(product);
+        Long id = foodProductRepository.save(product);
+        return product.getId();
     }
 
     @Override
@@ -43,9 +45,10 @@ public class FoodProductServiceImpl implements FoodProductService {
     }
 
     @Override
-    public FoodProduct updateFoodProduct(FoodProduct product) {
+    public Long updateFoodProduct(FoodProduct product) {
         log.info("update product id: {}", product.getId());
-        return foodProductRepository.update(product);
+        foodProductRepository.update(product);
+        return product.getId();
     }
 
     @Override

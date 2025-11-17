@@ -1,7 +1,7 @@
 package com.solvd.onlinemarkettc.service.impl;
 
 import com.solvd.onlinemarkettc.domain.item.DiscountedItem;
-import com.solvd.onlinemarkettc.persistence.impl.DiscountedItemRepositoryImpl;
+import com.solvd.onlinemarkettc.persistence.mybatisimpl.DiscountedItemRepositoryMybatisImpl;
 import com.solvd.onlinemarkettc.service.DiscountedItemService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,16 +12,18 @@ import java.util.Optional;
 public class DiscountedItemServiceImpl implements DiscountedItemService {
 
     private static final Logger log = LogManager.getLogger(DiscountedItemServiceImpl.class);
-    private final DiscountedItemRepositoryImpl discountedItemRepository;
+    //private final DiscountedItemRepositoryImpl discountedItemRepository;
+    private final DiscountedItemRepositoryMybatisImpl discountedItemRepository;
 
     public DiscountedItemServiceImpl() {
-        this.discountedItemRepository = new DiscountedItemRepositoryImpl();
+        this.discountedItemRepository = new DiscountedItemRepositoryMybatisImpl();
     }
 
     @Override
-    public DiscountedItem createDiscountedItem(DiscountedItem item) {
+    public Long createDiscountedItem(DiscountedItem item) {
         log.info("create item: {}", item.getName());
-        return discountedItemRepository.save(item);
+        discountedItemRepository.save(item);
+        return item.getId();
     }
 
     @Override
@@ -43,9 +45,10 @@ public class DiscountedItemServiceImpl implements DiscountedItemService {
     }
 
     @Override
-    public DiscountedItem updateDiscountedItem(DiscountedItem item) {
+    public Long updateDiscountedItem(DiscountedItem item) {
         log.info("update item id: {}", item.getId());
-        return discountedItemRepository.update(item);
+        discountedItemRepository.update(item);
+        return item.getId();
     }
 
     @Override

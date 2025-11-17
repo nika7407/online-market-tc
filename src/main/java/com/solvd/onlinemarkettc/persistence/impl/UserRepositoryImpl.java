@@ -93,7 +93,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public User save(User user) {
+    public Long save(User user) {
         String sqlSave = "INSERT INTO users(name, card_number, basket_id) VALUES (?, ?, ?) RETURNING id";
 
         Connection connection = null;
@@ -116,7 +116,7 @@ public class UserRepositoryImpl implements UserRepository {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return user;
+        return user.getId();
     }
 
     @Override
@@ -145,7 +145,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User update(User user) {
+    public Long update(User user) {
         String sqlUpdate = "UPDATE users SET name = ?, card_number = ?, basket_id = ? WHERE id = ?";
         Connection connection = null;
 
@@ -171,7 +171,7 @@ public class UserRepositoryImpl implements UserRepository {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        return user;
+        return user.getId();
     }
 
     private User mapResultSetToUser(ResultSet resultSet) throws SQLException {
