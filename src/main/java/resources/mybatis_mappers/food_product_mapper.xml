@@ -3,20 +3,20 @@
 <mapper namespace="com.solvd.onlinemarkettc.persistence.FoodProductRepository">
 
     <select id="findById" parameterType="Long" resultMap="FoodProductResultMap">
-        SELECT *
+        SELECT id, name, cost, expiration_date
         FROM food_products
         WHERE id = #{id}
     </select>
 
     <select id="findByName" parameterType="String" resultMap="FoodProductResultMap">
-        SELECT *
+        SELECT id, name, cost, expiration_date
         FROM food_products
         WHERE name = #{name}
         LIMIT 1
     </select>
 
     <select id="findAll" resultMap="FoodProductResultMap">
-        SELECT *
+        SELECT id, name, cost, expiration_date
         FROM food_products
     </select>
 

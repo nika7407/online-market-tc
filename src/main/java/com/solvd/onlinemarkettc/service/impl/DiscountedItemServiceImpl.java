@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.Optional;
 
 public class DiscountedItemServiceImpl implements DiscountedItemService {
 
@@ -27,15 +26,15 @@ public class DiscountedItemServiceImpl implements DiscountedItemService {
     }
 
     @Override
-    public Optional<DiscountedItem> getDiscountedItemById(Long id) {
+    public DiscountedItem getDiscountedItemById(Long id) {
         log.debug("find item id: {}", id);
-        return discountedItemRepository.findById(id);
+        return discountedItemRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     @Override
-    public Optional<DiscountedItem> getDiscountedItemByName(String name) {
+    public DiscountedItem getDiscountedItemByName(String name) {
         log.debug("find item name: {}", name);
-        return discountedItemRepository.findByName(name);
+        return discountedItemRepository.findByName(name).orElseThrow(RuntimeException::new);
     }
 
     @Override

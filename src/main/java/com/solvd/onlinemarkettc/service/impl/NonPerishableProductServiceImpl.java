@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.Optional;
 
 public class NonPerishableProductServiceImpl implements NonPerishableProductService {
 
@@ -22,19 +21,21 @@ public class NonPerishableProductServiceImpl implements NonPerishableProductServ
     @Override
     public Long createNonPerishableProduct(NonPerishebleProduct product) {
         log.info("create product: {}", product.getName());
-        return nonPerishableProductRepository.save(product);
+
+        nonPerishableProductRepository.save(product);
+        return product.getId();
     }
 
     @Override
-    public Optional<NonPerishebleProduct> getNonPerishableProductById(Long id) {
+    public NonPerishebleProduct getNonPerishableProductById(Long id) {
         log.debug("find product id: {}", id);
-        return nonPerishableProductRepository.findById(id);
+        return nonPerishableProductRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     @Override
-    public Optional<NonPerishebleProduct> getNonPerishableProductByName(String name) {
+    public NonPerishebleProduct getNonPerishableProductByName(String name) {
         log.debug("find product name: {}", name);
-        return nonPerishableProductRepository.findByName(name);
+        return nonPerishableProductRepository.findByName(name).orElseThrow(RuntimeException::new);
     }
 
     @Override

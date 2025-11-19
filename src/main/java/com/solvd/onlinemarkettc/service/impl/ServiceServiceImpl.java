@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.Optional;
 
 // ik its stupid BUT idc
 public class ServiceServiceImpl implements ServiceService {
@@ -23,19 +22,20 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public Long createService(Service service) {
         log.info("create service: {}", service.getName());
-        return serviceRepository.save(service);
+        serviceRepository.save(service);
+        return service.getId();
     }
 
     @Override
-    public Optional<Service> getServiceById(Long id) {
+    public Service getServiceById(Long id) {
         log.debug("find service id: {}", id);
-        return serviceRepository.findById(id);
+        return serviceRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     @Override
-    public Optional<Service> getServiceByName(String name) {
+    public Service getServiceByName(String name) {
         log.debug("find service name: {}", name);
-        return serviceRepository.findByName(name);
+        return serviceRepository.findByName(name).orElseThrow(RuntimeException::new);
     }
 
     @Override

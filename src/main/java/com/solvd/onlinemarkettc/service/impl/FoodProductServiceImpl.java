@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.Optional;
 
 public class FoodProductServiceImpl implements FoodProductService {
 
@@ -27,15 +26,15 @@ public class FoodProductServiceImpl implements FoodProductService {
     }
 
     @Override
-    public Optional<FoodProduct> getFoodProductById(Long id) {
+    public FoodProduct getFoodProductById(Long id) {
         log.debug("find product id: {}", id);
-        return foodProductRepository.findById(id);
+        return foodProductRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     @Override
-    public Optional<FoodProduct> getFoodProductByName(String name) {
+    public FoodProduct getFoodProductByName(String name) {
         log.debug("find product name: {}", name);
-        return foodProductRepository.findByName(name);
+        return foodProductRepository.findByName(name).orElseThrow(RuntimeException::new);
     }
 
     @Override

@@ -56,7 +56,7 @@ public class Main {
         FoodProduct apple = new FoodProduct(0.5, "apple");
         FoodProduct banana = new FoodProduct(0.3, "banana", 5L);
 
-        NonPerishebleProduct soap = new NonPerishebleProduct("soap", 1.2, "");
+        NonPerishebleProduct soap = new NonPerishebleProduct("soap", 6.2, "");
         NonPerishebleProduct shampoo = new NonPerishebleProduct("shampoo", 3.5, "", 2L);
 
         ArrayList<FoodProduct> foodList = new ArrayList<>();
@@ -108,12 +108,10 @@ public class Main {
 
         //product service
         Long id5 = foodProductService.createFoodProduct(apple);
-        FoodProduct foodProduct = foodProductService.getFoodProductById(id5)
-                .orElseThrow(() -> new RuntimeException("food by id not found"));
+        FoodProduct foodProduct = foodProductService.getFoodProductById(id5);
         log.info("food product from db by id name: {}", foodProduct.getName());
 
-        FoodProduct foodProduct2 = foodProductService.getFoodProductByName("apple")
-                .orElseThrow(() -> new RuntimeException("food by name apple not found"));
+        FoodProduct foodProduct2 = foodProductService.getFoodProductByName("apple");
         log.info("food product from db by name, name: {}", foodProduct2.getName());
 
         foodProductService.getAllFoodProducts().forEach(food -> {
@@ -134,7 +132,8 @@ public class Main {
         //NonPerish
         nonPerishableProductService.getAllNonPerishableProducts();
         log.info("found all non perish");
-        nonPerishableProductService.getNonPerishableProductById(nonPerishableProductService.createNonPerishableProduct(soap));
+        Long id6 = nonPerishableProductService.createNonPerishableProduct(soap);
+        nonPerishableProductService.getNonPerishableProductById(id6);
         nonPerishableProductService.deleteNonPerishableProduct(nonPerishableProductService.createNonPerishableProduct(soap));
         NonPerishebleProduct Notsoap = new NonPerishebleProduct("soap", 1.2, "");
 
@@ -174,8 +173,7 @@ public class Main {
         basketService.createBasketWithItems(basket3);
         log.info("created basket id {}", basket3.getId());
 
-        Basket foundBasket = basketService.getBasketById(basket3.getId())
-                .orElseThrow(() -> new RuntimeException("basket not found"));
+        Basket foundBasket = basketService.getBasketById(basket3.getId());
         log.info("found basket id {}", foundBasket.getId());
 
         basketService.getAllBaskets().forEach(b -> {
@@ -186,7 +184,7 @@ public class Main {
         basket.setId(basket3.getId());
         User user = new User("someUser", debitCard1, basket);
         Long userId = userService.createUser(user);
-        User foundUser = userService.getUserById(userId).orElseThrow();
+        User foundUser = userService.getUserById(userId);
         userService.getAllUsers();
         foundUser.setName("notSomeUser");
         userService.deleteUser(userId);

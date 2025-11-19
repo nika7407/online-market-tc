@@ -3,19 +3,19 @@
 <mapper namespace="com.solvd.onlinemarkettc.persistence.UserRepository">
 
     <select id="findById" parameterType="Long" resultMap="UserResultMap">
-        SELECT *
+        SELECT id, name, card_number, basket_id
         FROM users
         WHERE id = #{id}
     </select>
 
     <select id="findByName" parameterType="String" resultMap="UserResultMap">
-        SELECT *
+        SELECT id, name, card_number, basket_id
         FROM users
         WHERE name = #{name}
     </select>
 
     <select id="findAll" resultMap="UserResultMap">
-        SELECT *
+        SELECT id, name, card_number, basket_id
         FROM users
     </select>
 

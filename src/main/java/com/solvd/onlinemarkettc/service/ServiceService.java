@@ -3,16 +3,15 @@ package com.solvd.onlinemarkettc.service;
 import com.solvd.onlinemarkettc.domain.item.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 // ik its stupid name
 public interface ServiceService {
 
     Long createService(Service service);
 
-    Optional<Service> getServiceById(Long id);
+    Service getServiceById(Long id);
 
-    Optional<Service> getServiceByName(String name);
+    Service getServiceByName(String name);
 
     List<Service> getAllServices();
 

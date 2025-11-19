@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
 
@@ -27,15 +26,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getUserById(Long id) {
+    public User getUserById(Long id) {
         log.debug("find user id: {}", id);
-        return userRepository.findById(id);
+        return userRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     @Override
-    public Optional<User> getUserByName(String name) {
+    public User getUserByName(String name) {
         log.debug("find user name: {}", name);
-        return userRepository.findByName(name);
+        return userRepository.findByName(name).orElseThrow(RuntimeException::new);
     }
 
     @Override

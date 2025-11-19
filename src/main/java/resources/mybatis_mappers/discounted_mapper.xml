@@ -3,19 +3,19 @@
 <mapper namespace="com.solvd.onlinemarkettc.persistence.DiscountedItemRepository">
 
     <select id="findById" parameterType="Long" resultMap="DiscountedItemResultMap">
-        SELECT *
+        SELECT id, name, cost, description
         FROM discounted_items
         WHERE id = #{id}
     </select>
 
     <select id="findByName" parameterType="String" resultMap="DiscountedItemResultMap">
-        SELECT *
+        SELECT id, name, cost, description
         FROM discounted_items
         WHERE name = #{name}
     </select>
 
     <select id="findAll" resultMap="DiscountedItemResultMap">
-        SELECT *
+        SELECT id, name, cost, description
         FROM discounted_items
     </select>
 

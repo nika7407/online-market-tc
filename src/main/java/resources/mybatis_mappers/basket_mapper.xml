@@ -3,13 +3,13 @@
 <mapper namespace="com.solvd.onlinemarkettc.persistence.BasketRepository">
 
     <select id="findById" parameterType="Long" resultMap="BasketResultMap">
-        SELECT *
+        SELECT sum_cost, date, delivery_address_id, id
         FROM baskets
         WHERE id = #{id}
     </select>
 
     <select id="findAll" resultMap="BasketResultMap">
-        SELECT *
+        SELECT sum_cost, date, delivery_address_id, id
         FROM baskets
     </select>
 
@@ -78,35 +78,17 @@
             <result property="deliveryAddress" column="delivery_address"/>
         </association>
 
-        <collection property="foodProductList" ofType="com.solvd.onlinemarkettc.domain.item.FoodProduct">
-            <id property="id" column="food_product_id"/>
-            <result property="name" column="food_product_name"/>
-            <result property="cost" column="food_product_cost"/>
-            <result property="expirationDate" column="food_product_expiration_date"/>
-        </collection>
+        <collection property="foodProductList"
+                    resultMap="com.solvd.onlinemarkettc.persistence.FoodProductRepository.FoodProductResultMap"/>
 
         <collection property="nonPerishebleProductList"
-                    ofType="com.solvd.onlinemarkettc.domain.item.NonPerishebleProduct">
-            <id property="id" column="non_perishable_product_id"/>
-            <result property="name" column="non_perishable_product_name"/>
-            <result property="cost" column="non_perishable_product_cost"/>
-            <result property="description" column="non_perishable_product_description"/>
-        </collection>
+                    resultMap="com.solvd.onlinemarkettc.persistence.NonPerishableProductRepository.NonPerishableProductResultMap"/>
 
-        <collection property="discountedItemList" ofType="com.solvd.onlinemarkettc.domain.item.DiscountedItem">
-            <id property="id" column="discounted_item_id"/>
-            <result property="name" column="discounted_item_name"/>
-            <result property="cost" column="discounted_item_cost"/>
-            <result property="description" column="discounted_item_description"/>
-        </collection>
+        <collection property="discountedItemList"
+                    resultMap="com.solvd.onlinemarkettc.persistence.DiscountedItemRepository.DiscountedItemResultMap"/>
 
-        <collection property="serviceList" ofType="com.solvd.onlinemarkettc.domain.item.Service">
-            <id property="id" column="service_id"/>
-            <result property="name" column="service_name"/>
-            <result property="cost" column="service_cost"/>
-            <result property="description" column="service_description"/>
-            <result property="serviceProvider" column="service_provider"/>
-        </collection>
+        <collection property="serviceList"
+                    resultMap="com.solvd.onlinemarkettc.persistence.ServiceRepository.ServiceResultMap"/>
     </resultMap>
 
     <!-- mtm thigs -->

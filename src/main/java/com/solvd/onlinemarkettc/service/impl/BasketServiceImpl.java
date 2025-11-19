@@ -15,7 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.Optional;
 
 public class BasketServiceImpl implements BasketService {
 
@@ -62,9 +61,9 @@ public class BasketServiceImpl implements BasketService {
     }
 
     @Override
-    public Optional<Basket> getBasketById(Long id) {
+    public Basket getBasketById(Long id) {
         log.debug("find basket by id");
-        return basketRepository.findById(id);
+        return basketRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     public Basket getBasketWithAllItems(Long basketId) {
@@ -73,27 +72,7 @@ public class BasketServiceImpl implements BasketService {
         Basket basket = basketRepository.findById(basketId)
                 .orElseThrow(() -> new RuntimeException("basket not found"));
 
-        List<Long> foodProductIds = basketRepository.findFoodProductIdsByBasketId(basketId);
-        for (Long foodId : foodProductIds) {
-            foodProductService.getFoodProductById(foodId).ifPresent(basket::addFoodProduct);
-        }
-
-        List<Long> nonPerishableProductIds = basketRepository.findNonPerishableProductIdsByBasketId(basketId);
-        for (Long productId : nonPerishableProductIds) {
-            nonPerishableProductService.getNonPerishableProductById(productId).ifPresent(basket::addProduct);
-        }
-
-        List<Long> discountedItemIds = basketRepository.findDiscountedItemIdsByBasketId(basketId);
-        for (Long itemId : discountedItemIds) {
-            discountedItemService.getDiscountedItemById(itemId).ifPresent(basket::addDiscountedItem);
-        }
-
-        List<Long> serviceIds = basketRepository.findServiceIdsByBasketId(basketId);
-        for (Long serviceId : serviceIds) {
-            serviceService.getServiceById(serviceId).ifPresent(basket::addService);
-        }
-
-        return basket;
+        return basketRepository.findBasketWithAllItems(basketId);
     }
 
     public List<Basket> getAllBaskets() {

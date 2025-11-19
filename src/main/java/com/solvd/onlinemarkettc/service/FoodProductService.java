@@ -3,15 +3,14 @@ package com.solvd.onlinemarkettc.service;
 import com.solvd.onlinemarkettc.domain.item.FoodProduct;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface FoodProductService {
 
     Long createFoodProduct(FoodProduct product);
 
-    Optional<FoodProduct> getFoodProductById(Long id);
+    FoodProduct getFoodProductById(Long id);
 
-    Optional<FoodProduct> getFoodProductByName(String name);
+    FoodProduct getFoodProductByName(String name);
 
     List<FoodProduct> getAllFoodProducts();
 
