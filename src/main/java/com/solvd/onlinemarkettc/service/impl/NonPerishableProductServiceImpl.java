@@ -29,13 +29,15 @@ public class NonPerishableProductServiceImpl implements NonPerishableProductServ
     @Override
     public NonPerishebleProduct getNonPerishableProductById(Long id) {
         log.debug("find product id: {}", id);
-        return nonPerishableProductRepository.findById(id).orElseThrow(RuntimeException::new);
+        return nonPerishableProductRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("product not found by id " + id));
     }
 
     @Override
     public NonPerishebleProduct getNonPerishableProductByName(String name) {
         log.debug("find product name: {}", name);
-        return nonPerishableProductRepository.findByName(name).orElseThrow(RuntimeException::new);
+        return nonPerishableProductRepository.findByName(name)
+                .orElseThrow(() -> new RuntimeException("product not found by id " + name));
     }
 
     @Override
