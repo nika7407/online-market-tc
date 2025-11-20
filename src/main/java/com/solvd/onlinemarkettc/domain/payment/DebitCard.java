@@ -13,12 +13,16 @@ public class DebitCard {
     @XmlElement(name = "cardNumber")
     @JsonProperty("cardNumber")
     private Long cardId;
+
     @XmlElement(name = "active")
     @JsonProperty("active")
     private boolean active;
+
     @XmlElement(name = "moneyAmount")
     @JsonProperty("moneyAmount")
-    private double moneyAmount = 0.0;
+    private double moneyAmount;
+
+    private static final EventHolder eventHolder = new EventHolder();
 
     public DebitCard(boolean active, double moneyAmount) {
         this.cardId = Long.valueOf(Generator.numberGenerator());
@@ -39,27 +43,43 @@ public class DebitCard {
         return cardId;
     }
 
-    public void setCardNumber(Long cardNumber) {
-        this.cardId = cardNumber;
+    public void setCardNumber(Long cardId) {
+        this.cardId = cardId;
     }
 
     public boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
     public double getMoneyAmount() {
         return moneyAmount;
     }
 
-    public void setMoneyAmount(double moneyAmount) {
-        this.moneyAmount = moneyAmount;
+    public static EventHolder getEventHolder() {
+        return eventHolder;
     }
 
-    public void minusMoney(Double amountToMinus) {
-        moneyAmount = moneyAmount - amountToMinus;
+    public void setActive(boolean active) {
+        boolean old = this.active;
+        this.active = active;
+
+        if (!old && active)
+            eventHolder.notify(EventType.CARD_ACTIVATED, "activated" + cardId);
+        if (old && !active)
+            eventHolder.notify(EventType.CARD_BLOCKED, "blocked" + cardId);
+    }
+
+    public void setMoneyAmount(double moneyAmount) {
+        double old = this.moneyAmount;
+        this.moneyAmount = moneyAmount;
+        eventHolder.notify(EventType.BALANCE_CHANGED,
+                "Balance: " + old + " -> " + moneyAmount);
+    }
+
+    public void minusMoney(double amount) {
+        double old = this.moneyAmount;
+        this.moneyAmount -= amount;
+        eventHolder.notify(EventType.BALANCE_CHANGED,
+                "Balance: " + old + " -> " + this.moneyAmount);
     }
 }

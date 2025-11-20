@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "address")
-public class Address {
+public class Address implements AddressInterface {
 
 
     @XmlElement(name = "deliveryAddress")
@@ -39,16 +39,10 @@ public class Address {
         this.userId = userId;
     }
 
-    // старые методы (с опечаткой) оставлены для совместимости
-    public String getDeliveryAdress() {
-        return deliveryAddress;
-    }
-
     public void setDeliveryAdress(String deliveryAdress) {
         this.deliveryAddress = deliveryAdress;
     }
 
-    // новые корректные методы, которые использует парсер
     public String getDeliveryAddress() {
         return deliveryAddress;
     }

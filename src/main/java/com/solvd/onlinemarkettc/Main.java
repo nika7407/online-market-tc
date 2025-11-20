@@ -2,20 +2,28 @@ package com.solvd.onlinemarkettc;
 
 import com.jayway.jsonpath.JsonPath;
 import com.solvd.onlinemarkettc.domain.delivery.Address;
+import com.solvd.onlinemarkettc.domain.delivery.Delivery;
+import com.solvd.onlinemarkettc.domain.delivery.PickupAtPlace;
 import com.solvd.onlinemarkettc.domain.finantialoperation.Basket;
 import com.solvd.onlinemarkettc.domain.finantialoperation.CheckOut;
 import com.solvd.onlinemarkettc.domain.finantialoperation.OnlineShop;
 import com.solvd.onlinemarkettc.domain.item.DiscountedItem;
+import com.solvd.onlinemarkettc.domain.item.DiscountedItemDecorator;
 import com.solvd.onlinemarkettc.domain.item.FoodProduct;
 import com.solvd.onlinemarkettc.domain.item.NonPerishebleProduct;
 import com.solvd.onlinemarkettc.domain.item.Service;
+import com.solvd.onlinemarkettc.domain.item.factory.FactoryMaker;
+import com.solvd.onlinemarkettc.domain.item.factory.FoodProductFactory;
+import com.solvd.onlinemarkettc.domain.item.factory.NonPerishebleProductFactory;
 import com.solvd.onlinemarkettc.domain.payment.DebitCard;
+import com.solvd.onlinemarkettc.domain.payment.EventType;
 import com.solvd.onlinemarkettc.domain.user.User;
 import com.solvd.onlinemarkettc.service.BasketService;
 import com.solvd.onlinemarkettc.service.DiscountedItemService;
 import com.solvd.onlinemarkettc.service.FoodProductService;
 import com.solvd.onlinemarkettc.service.NonPerishableProductService;
 import com.solvd.onlinemarkettc.service.ServiceService;
+import com.solvd.onlinemarkettc.service.ShopFacade;
 import com.solvd.onlinemarkettc.service.UserService;
 import com.solvd.onlinemarkettc.service.impl.BasketServiceImpl;
 import com.solvd.onlinemarkettc.service.impl.DiscountedItemServiceImpl;
@@ -53,11 +61,20 @@ public class Main {
         log.info("=== Logger INFO ===");
         log.error("=== Logger ERROR ===");
         log.debug("=== Logger DEBUG ===");
-        FoodProduct apple = new FoodProduct(0.5, "apple");
-        FoodProduct banana = new FoodProduct(0.3, "banana", 5L);
 
-        NonPerishebleProduct soap = new NonPerishebleProduct("soap", 6.2, "");
-        NonPerishebleProduct shampoo = new NonPerishebleProduct("shampoo", 3.5, "", 2L);
+        DebitCard GeneratedCard = new DebitCard(true, 1000.0);
+        DebitCard customCard = new DebitCard(123456789L, true, 500.0);
+        DebitCard.getEventHolder().notify(EventType.CARD_BLOCKED, "cardblocked");
+        FoodProductFactory foodFactory = (FoodProductFactory) FactoryMaker.getFactory("food");
+        NonPerishebleProductFactory nonFoodFactory = (NonPerishebleProductFactory) FactoryMaker.getFactory("nonfood");
+
+        FoodProduct apple = foodFactory.create(0.5, "apple", null);
+        FoodProduct banana = foodFactory.create(0.3, "banana", null);
+        banana.setId(5L);
+
+        NonPerishebleProduct soap = nonFoodFactory.create("soap", 6.2, "");
+        NonPerishebleProduct shampoo = nonFoodFactory.create("shampoo", 3.5, "");
+        shampoo.setId(2L);
 
         ArrayList<FoodProduct> foodList = new ArrayList<>();
         foodList.add(apple);
@@ -71,9 +88,15 @@ public class Main {
         log.info("online shop launched!");
         Basket basket = new Basket();
         basket.addFoodProduct(apple);
-        DebitCard debitCard1 = new DebitCard(5555L, true, 10000);
 
-        CheckOut.checkoutBasket(debitCard1, basket);
+        CheckOut.checkoutBasket(GeneratedCard, basket);
+
+        //strategy
+        PickupAtPlace adress2 = new PickupAtPlace();
+
+        Delivery delivery = new Delivery(basket.getAddress(),basket);
+        delivery.setAddressInterface(adress2);
+        delivery.Deliver();
 
         String xmlPath = "src/main/java/resources/hierarchy.xml";
         Xparser parser = new Xparser();
@@ -106,7 +129,6 @@ public class Main {
         Long basketId = (id == null) ? null : id.longValue();
         log.info("First basket ID: {}", basketId);
 
-        //product service
         Long id5 = foodProductService.createFoodProduct(apple);
         FoodProduct foodProduct = foodProductService.getFoodProductById(id5);
         log.info("food product from db by id name: {}", foodProduct.getName());
@@ -121,7 +143,6 @@ public class Main {
         foodProductService.deleteFoodProduct(3L);
         foodProductService.updateFoodProduct(banana);
 
-        //Discounted Things
         discountedItemService.getAllDiscountedItems();
         log.info("all discounted found");
         discountedItemService.createDiscountedItem(new DiscountedItem("some item", 10.5, "idk"));
@@ -129,31 +150,41 @@ public class Main {
         discountedItemService.deleteDiscountedItem(1L);
         discountedItemService.updateDiscountedItem(new DiscountedItem("NOTsome item", 1L, 10.5, "idk"));
 
-        //NonPerish
         nonPerishableProductService.getAllNonPerishableProducts();
         log.info("found all non perish");
         Long id6 = nonPerishableProductService.createNonPerishableProduct(soap);
         nonPerishableProductService.getNonPerishableProductById(id6);
         nonPerishableProductService.deleteNonPerishableProduct(nonPerishableProductService.createNonPerishableProduct(soap));
-        NonPerishebleProduct Notsoap = new NonPerishebleProduct("soap", 1.2, "");
+        NonPerishebleProduct Notsoap = nonFoodFactory.create("soap", 1.2, "");
 
         nonPerishableProductService.createNonPerishableProduct(Notsoap);
         Notsoap.setName("NotSoap");
         Long id4 = nonPerishableProductService.createNonPerishableProduct(Notsoap);
 
-        //Service
-        Service service = new Service("service", 16.3, "idk", "some guy");
+        Service service = Service.builder().name("service")
+                .cost(16.3)
+                .description("idk")
+                .serviceProvider("someguy")
+                .build();
+
         var serviceid = serviceService.createService(service);
         serviceService.getAllServices();
         serviceService.getServiceById(serviceid);
-        Service NOTservice = new Service("service", 16.3, "idk", "some guy");
+        Service NOTservice = Service.builder().name("service")
+                .cost(16.3)
+                .description("idk")
+                .serviceProvider("some guy")
+                .build();
+
+        DiscountedItem item = new DiscountedItem("dog Food", 1L, 20.0, "food");
+        DiscountedItemDecorator discountedItemDecorator = new DiscountedItemDecorator(item);
+
         var newId = serviceService.createService(NOTservice);
         NOTservice.setName("NotService");
         NOTservice.setId(newId);
         serviceService.updateService(NOTservice);
         serviceService.deleteService(newId);
 
-        //Basket service
         List<FoodProduct> foodProductList = new ArrayList<>();
         List<NonPerishebleProduct> nonPerishableProductList = new ArrayList<>();
         List<DiscountedItem> discountedItemList = new ArrayList<>();
@@ -170,6 +201,8 @@ public class Main {
                 adrress2
         );
 
+        ShopFacade shopFacade = new ShopFacade(foodProductService,userService,basketService);
+
         basketService.createBasketWithItems(basket3);
         log.info("created basket id {}", basket3.getId());
 
@@ -180,14 +213,13 @@ public class Main {
             log.info("basket in list id {} and cost {}", b.getId(), b.getSumCost());
         });
 
-        //User
         basket.setId(basket3.getId());
-        User user = new User("someUser", debitCard1, basket);
-        Long userId = userService.createUser(user);
-        User foundUser = userService.getUserById(userId);
-        userService.getAllUsers();
-        foundUser.setName("notSomeUser");
-        userService.deleteUser(userId);
+        User user = new User("someUser", GeneratedCard, basket);
+//        Long userId = userService.createUser(user);
+//        User foundUser = userService.getUserById(userId);
+//        userService.getAllUsers();
+//        foundUser.setName("notSomeUser");
+//        userService.deleteUser(userId);
 
         System.out.println("ended");
     }

@@ -36,6 +36,14 @@ public class Service {
     public Service() {
     }
 
+    private Service(Builder builder) {
+        this.name = builder.name;
+        this.id = builder.id;
+        this.cost = builder.cost;
+        this.description = builder.description;
+        this.serviceProvider = builder.serviceProvider;
+    }
+
     public Service(String name, double cost, String description, String serviceProvider) {
         this.name = name;
         this.cost = cost;
@@ -43,12 +51,45 @@ public class Service {
         this.serviceProvider = serviceProvider;
     }
 
-    public Service(String name, Long id, double cost, String description, String serviceProvider) {
-        this.name = name;
-        this.id = id;
-        this.cost = cost;
-        this.description = description;
-        this.serviceProvider = serviceProvider;
+    public static class Builder {
+        private String name;
+        private Long id;
+        private double cost;
+        private String description = "";
+        private String serviceProvider;
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder cost(double cost) {
+            this.cost = cost;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder serviceProvider(String serviceProvider) {
+            this.serviceProvider = serviceProvider;
+            return this;
+        }
+
+        public Service build() {
+            return new Service(this);
+        }
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public String getName() {
@@ -90,5 +131,4 @@ public class Service {
     public void setId(Long id) {
         this.id = id;
     }
-
 }

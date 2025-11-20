@@ -138,7 +138,7 @@ public class Dparser {
                 DebitCard debitCard = new DebitCard();
 
                 debitCard.setActive(Boolean.parseBoolean(debitCardElement.getElementsByTagName("active").item(0).getTextContent()));
-                debitCard.setCardNumber(Long.parseLong(debitCardElement.getElementsByTagName("cardNumber").item(0).getTextContent()));
+               // debitCard.setCardNumber(Long.parseLong(debitCardElement.getElementsByTagName("cardNumber").item(0).getTextContent()));
                 debitCard.setMoneyAmount(Double.parseDouble(debitCardElement.getElementsByTagName("moneyAmount").item(0).getTextContent()));
                 user.setDebitCard(debitCard);
 
